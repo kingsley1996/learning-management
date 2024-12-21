@@ -1529,3 +1529,17 @@ input[type="color"] {
 .dashboard-navbar__sidebar-trigger {
   @apply text-customgreys-dirtyGrey hover:text-white-50 transition-colors;
 }
+
+/* My custom style */
+/* .hero-figure {
+  height: 24.67em;
+} */
+
+.hero-figure #avatar-shapes {
+  top: -7rem;
+  width: 40em;
+  z-index: 99;
+  height: 126%;
+  right: -5rem;
+  position: absolute;
+}
