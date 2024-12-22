@@ -2,6 +2,7 @@ import * as z from "zod";
 
 // Course Editor Schemas
 export const courseSchema = z.object({
+  image: z.object({}),
   isFreeCourse: z.boolean(),
   courseTitle: z.string().min(1, "Title is required"),
   courseDescription: z.string().min(1, "Description is required"),

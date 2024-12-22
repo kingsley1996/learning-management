@@ -3,18 +3,28 @@
 import { CustomFormField } from "@/components/CustomFormField";
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { courseSchema } from "@/lib/schemas";
 import {
   centsToDollars,
   createCourseFormData,
   uploadAllVideos,
+  uploadImage,
 } from "@/lib/utils";
 import { openSectionModal, setSections } from "@/state";
 import {
   useGetCourseQuery,
   useUpdateCourseMutation,
   useGetUploadVideoUrlMutation,
+  useGetUploadImageUrlMutation,
 } from "@/state/api";
 import { useAppDispatch, useAppSelector } from "@/state/redux";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -25,6 +35,7 @@ import { useForm } from "react-hook-form";
 import DroppableComponent from "./Droppable";
 import ChapterModal from "./ChapterModal";
 import SectionModal from "./SectionModal";
+import Image from "next/image";
 
 const CourseEditor = () => {
   const router = useRouter();
@@ -33,6 +44,7 @@ const CourseEditor = () => {
   const { data: course, isLoading, refetch } = useGetCourseQuery(id);
   const [updateCourse] = useUpdateCourseMutation();
   const [getUploadVideoUrl] = useGetUploadVideoUrlMutation();
+  const [getUploadImageUrl] = useGetUploadImageUrlMutation();
 
   const dispatch = useAppDispatch();
   const { sections } = useAppSelector((state) => state.global.courseEditor);
@@ -41,6 +53,7 @@ const CourseEditor = () => {
     resolver: zodResolver(courseSchema),
     defaultValues: {
       isFreeCourse: true,
+      image: "",
       courseTitle: "",
       courseDescription: "",
       courseCategory: "",
@@ -52,6 +65,7 @@ const CourseEditor = () => {
   useEffect(() => {
     if (course) {
       methods.reset({
+        image: course.image,
         isFreeCourse: course.isFreeCourse,
         courseTitle: course.title,
         courseDescription: course.description,
@@ -70,8 +84,10 @@ const CourseEditor = () => {
         id,
         getUploadVideoUrl
       );
+      const imageFile = methods.watch("image");
+      const { image } = await uploadImage(id, imageFile, getUploadImageUrl);
 
-      const formData = createCourseFormData(data, updatedSections);
+      const formData = createCourseFormData(data, image, updatedSections);
 
       await updateCourse({
         courseId: id,
@@ -143,6 +159,55 @@ const CourseEditor = () => {
                       : "text-yellow-500"
                   }`}
                   inputClassName="data-[state=checked]:bg-green-500"
+                />
+                <FormField
+                  control={methods.control}
+                  name="image"
+                  render={({ field: { onChange, value } }) => (
+                    <FormItem>
+                      <FormLabel className="text-customgreys-dirtyGrey text-sm">
+                        Ảnh đại diện
+                      </FormLabel>
+                      {course?.image && (
+                        <div>
+                          <Image
+                            src={course?.image}
+                            width={150}
+                            height={50}
+                            alt="Course Image"
+                          />
+                        </div>
+                      )}
+                      <FormControl>
+                        <div>
+                          <Input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) {
+                                console.log("file: ", file);
+                                // methods.setValue("image", file);
+                                onChange(file);
+                              }
+                            }}
+                            className="border-none bg-customgreys-darkGrey py-2 cursor-pointer"
+                          />
+                          {typeof value === "string" && value && (
+                            <div className="my-2 text-sm text-gray-600">
+                              Current video: {value.split("/").pop()}
+                            </div>
+                          )}
+                          {value instanceof File && (
+                            <div className="my-2 text-sm text-gray-600">
+                              Selected file: {value.name}
+                            </div>
+                          )}
+                        </div>
+                      </FormControl>
+                      <FormMessage className="text-red-400" />
+                    </FormItem>
+                  )}
                 />
 
                 <CustomFormField

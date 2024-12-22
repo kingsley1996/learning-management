@@ -290,10 +290,12 @@ export const customDataGridStyles = {
 
 export const createCourseFormData = (
   data: CourseFormData,
+  image: any,
   sections: Section[]
 ): FormData => {
   const formData = new FormData();
   formData.append("isFreeCourse", data.isFreeCourse.toString());
+  formData.append("image", image);
   formData.append("title", data.courseTitle);
   formData.append("description", data.courseDescription);
   formData.append("category", data.courseCategory);
@@ -384,6 +386,34 @@ async function uploadVideo(
       `Failed to upload video for chapter ${chapter.chapterId}:`,
       error
     );
+    throw error;
+  }
+}
+
+export async function uploadImage(
+  courseId: string,
+  file: any,
+  getUploadImageUrl: any
+) {
+  try {
+    const { uploadUrl, imageUrl } = await getUploadImageUrl({
+      courseId,
+      fileName: file.name,
+      fileType: file.type,
+    }).unwrap();
+
+    await fetch(uploadUrl, {
+      method: "PUT",
+      headers: {
+        "Content-Type": file.type,
+      },
+      body: file,
+    });
+    toast.success(`Image uploaded successfully for course - ${courseId}`);
+
+    return { image: imageUrl };
+  } catch (error) {
+    console.error(`Failed to upload image for course - ${courseId}:`, error);
     throw error;
   }
 }

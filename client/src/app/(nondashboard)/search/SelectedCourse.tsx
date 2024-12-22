@@ -13,6 +13,8 @@ const SelectedCourse = ({
   const hasEnrolled = userId
     ? course.enrollments?.some((enrollment) => enrollment.userId === userId)
     : false;
+  const showEnrollButton = !hasEnrolled && !course.isFreeCourse;
+  const showContinueButton = hasEnrolled || course.isFreeCourse;
   const router = useRouter();
 
   const handleGoToCourse = (course: Course) => {
@@ -53,7 +55,7 @@ const SelectedCourse = ({
           <h4 className="selected-course__sections-title">Nội dung khoá học</h4>
           <AccordionSections sections={course.sections} />
         </div>
-        {!hasEnrolled ? (
+        {showEnrollButton && (
           <div className="selected-course__footer">
             <span className="selected-course__price">
               {formatPrice(course.price)}
@@ -65,7 +67,8 @@ const SelectedCourse = ({
               Tham Gia
             </Button>
           </div>
-        ) : (
+        )}
+        {showContinueButton && (
           <Button
             onClick={() => handleGoToCourse(course)}
             className="mt-5 bg-primary-700 hover:bg-primary-600"

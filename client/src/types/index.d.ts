@@ -205,6 +205,7 @@ declare global {
   interface CourseFormData {
     courseTitle: string;
     isFreeCourse: boolean;
+    image: any;
     courseDescription: string;
     courseCategory: string;
     coursePrice: string;
