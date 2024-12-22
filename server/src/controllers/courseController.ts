@@ -94,6 +94,11 @@ export const updateCourse = async (
       return;
     }
 
+    if (updateData.isFreeCourse) {
+      updateData.isFreeCourse =
+        updateData.isFreeCourse?.toLowerCase() === "true";
+    }
+
     if (updateData.price) {
       const price = parseInt(updateData.price);
       if (isNaN(price)) {
