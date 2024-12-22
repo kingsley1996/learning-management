@@ -52,7 +52,7 @@ const CourseEditor = () => {
   useEffect(() => {
     if (course) {
       methods.reset({
-        isFreeCourse: course.isFreeCourse || true,
+        isFreeCourse: course.isFreeCourse,
         courseTitle: course.title,
         courseDescription: course.description,
         courseCategory: course.category,

@@ -49,7 +49,7 @@ const CourseCardSearch = ({
           <p className="course-card-search__teacher">By {course.teacherName}</p>
           <div className="course-card-search__footer">
             <span className="course-card-search__price">
-              {formatPrice(course.price)}
+              {course.isFreeCourse ? "Miễn phí" : formatPrice(course.price)}
             </span>
             <span className="course-card-search__enrollment">
               {course.enrollments?.length} đã tham gia
