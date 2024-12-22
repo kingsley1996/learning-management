@@ -41,6 +41,7 @@ declare global {
     teacherName: string;
     title: string;
     description?: string;
+    isFreeCourse: boolean;
     category: string;
     image?: string;
     price?: number; // Stored in cents (e.g., 4999 for $49.99)
@@ -57,7 +58,7 @@ declare global {
     transactionId: string;
     dateTime: string;
     courseId: string;
-    paymentProvider: "stripe";
+    paymentProvider: "stripe" | "momo" | "paypal";
     paymentMethodId?: string;
     amount: number; // Stored in cents
     savePaymentMethod?: boolean;
@@ -203,6 +204,7 @@ declare global {
 
   interface CourseFormData {
     courseTitle: string;
+    isFreeCourse: boolean;
     courseDescription: string;
     courseCategory: string;
     coursePrice: string;

@@ -79,6 +79,10 @@ const courseSchema = new Schema(
       type: String,
       required: true,
     },
+    isFreeCourse: {
+      type: Boolean,
+      required: true,
+    },
     title: {
       type: String,
       required: true,

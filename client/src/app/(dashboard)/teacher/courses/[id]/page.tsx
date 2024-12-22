@@ -40,6 +40,7 @@ const CourseEditor = () => {
   const methods = useForm<CourseFormData>({
     resolver: zodResolver(courseSchema),
     defaultValues: {
+      isFreeCourse: true,
       courseTitle: "",
       courseDescription: "",
       courseCategory: "",
@@ -51,6 +52,7 @@ const CourseEditor = () => {
   useEffect(() => {
     if (course) {
       methods.reset({
+        isFreeCourse: course.isFreeCourse || true,
         courseTitle: course.title,
         courseDescription: course.description,
         courseCategory: course.category,
@@ -90,20 +92,22 @@ const CourseEditor = () => {
           onClick={() => router.push("/teacher/courses", { scroll: false })}
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Back to Courses</span>
+          <span>Trở lại</span>
         </button>
       </div>
 
       <Form {...methods}>
         <form onSubmit={methods.handleSubmit(onSubmit)}>
           <Header
-            title="Course Setup"
-            subtitle="Complete all fields and save your course"
+            title="Thiết lập khóa học"
+            subtitle="Hoàn thành tất cả các trường và lưu khóa học của bạn"
             rightElement={
               <div className="flex items-center space-x-4">
                 <CustomFormField
                   name="courseStatus"
-                  label={methods.watch("courseStatus") ? "Published" : "Draft"}
+                  label={
+                    methods.watch("courseStatus") ? "Công khai" : "Bản nháp"
+                  }
                   type="switch"
                   className="flex items-center space-x-2"
                   labelClassName={`text-sm font-medium ${
@@ -118,8 +122,8 @@ const CourseEditor = () => {
                   className="bg-primary-700 hover:bg-primary-600"
                 >
                   {methods.watch("courseStatus")
-                    ? "Update Published Course"
-                    : "Save Draft"}
+                    ? "Cập nhật khoá học"
+                    : "Lưu bản nháp"}
                 </Button>
               </div>
             }
@@ -129,34 +133,47 @@ const CourseEditor = () => {
             <div className="basis-1/2">
               <div className="space-y-4">
                 <CustomFormField
+                  name="isFreeCourse"
+                  label={methods.watch("isFreeCourse") ? "Miễn phí" : "Thu phí"}
+                  type="switch"
+                  className="flex items-center space-x-2"
+                  labelClassName={`text-sm font-medium ${
+                    methods.watch("isFreeCourse")
+                      ? "text-green-500"
+                      : "text-yellow-500"
+                  }`}
+                  inputClassName="data-[state=checked]:bg-green-500"
+                />
+
+                <CustomFormField
                   name="courseTitle"
-                  label="Course Title"
+                  label="Tiêu đề"
                   type="text"
-                  placeholder="Write course title here"
+                  placeholder="Viết tiêu đề ở đây"
                   className="border-none"
                   initialValue={course?.title}
                 />
 
                 <CustomFormField
                   name="courseDescription"
-                  label="Course Description"
+                  label="Mô tả"
                   type="textarea"
-                  placeholder="Write course description here"
+                  placeholder="Viết mô tả ở đây"
                   initialValue={course?.description}
                 />
 
                 <CustomFormField
                   name="courseCategory"
-                  label="Course Category"
+                  label="Chọn danh mục"
                   type="select"
-                  placeholder="Select category here"
+                  placeholder="Chọn danh mục ở đây"
                   options={[
-                    { value: "technology", label: "Technology" },
-                    { value: "science", label: "Science" },
-                    { value: "mathematics", label: "Mathematics" },
+                    { value: "technology", label: "Công Nghệ - IT" },
+                    { value: "science", label: "Khoa Học" },
+                    { value: "mathematics", label: "Toán Học" },
                     {
                       value: "Artificial Intelligence",
-                      label: "Artificial Intelligence",
+                      label: "AI",
                     },
                   ]}
                   initialValue={course?.category}
@@ -164,7 +181,8 @@ const CourseEditor = () => {
 
                 <CustomFormField
                   name="coursePrice"
-                  label="Course Price"
+                  disabled={methods.watch("isFreeCourse")}
+                  label="Giá"
                   type="number"
                   placeholder="0"
                   initialValue={course?.price}
@@ -175,7 +193,7 @@ const CourseEditor = () => {
             <div className="bg-customgreys-darkGrey mt-4 md:mt-0 p-4 rounded-lg basis-1/2">
               <div className="flex justify-between items-center mb-2">
                 <h2 className="text-2xl font-semibold text-secondary-foreground">
-                  Sections
+                  Danh mục
                 </h2>
 
                 <Button
@@ -189,17 +207,17 @@ const CourseEditor = () => {
                 >
                   <Plus className="mr-1 h-4 w-4 text-primary-700 group-hover:white-100" />
                   <span className="text-primary-700 group-hover:white-100">
-                    Add Section
+                    Thêm
                   </span>
                 </Button>
               </div>
 
               {isLoading ? (
-                <p>Loading course content...</p>
+                <p>Đang tải nội dung khoá học...</p>
               ) : sections.length > 0 ? (
                 <DroppableComponent />
               ) : (
-                <p>No sections available</p>
+                <p>Không có danh mục nào</p>
               )}
             </div>
           </div>
