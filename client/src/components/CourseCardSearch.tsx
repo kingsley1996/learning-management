@@ -5,17 +5,29 @@ import React from "react";
 const CourseCardSearch = ({
   course,
   isSelected,
+  userId,
   onClick,
 }: SearchCourseCardProps) => {
+  // Kiểm tra nếu userId có trong danh sách enrollments
+  const hasEnrolled = userId
+    ? course.enrollments?.some((enrollment) => enrollment.userId === userId)
+    : false;
+
   return (
     <div
       onClick={onClick}
-      className={`course-card-search group ${
+      className={`relative course-card-search group ${
         isSelected
           ? "course-card-search--selected"
           : "course-card-search--unselected"
       }`}
     >
+      {/* Badge "Đã tham gia" */}
+      {hasEnrolled && (
+        <div className="absolute top-2 right-2 bg-green-700 text-white text-sm font-semibold px-4 py-2 rounded-full shadow-md z-10">
+          Đã tham gia
+        </div>
+      )}
       <div className="course-card-search__image-container">
         <Image
           src={course.image || "/placeholder.png"}
@@ -40,7 +52,7 @@ const CourseCardSearch = ({
               {formatPrice(course.price)}
             </span>
             <span className="course-card-search__enrollment">
-              {course.enrollments?.length} Enrolled
+              {course.enrollments?.length} đã tham gia
             </span>
           </div>
         </div>

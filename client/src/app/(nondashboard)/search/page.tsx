@@ -7,6 +7,7 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import CourseCardSearch from "@/components/CourseCardSearch";
 import SelectedCourse from "./SelectedCourse";
+import { useUser } from "@clerk/nextjs";
 
 const Search = () => {
   const searchParams = useSearchParams();
@@ -14,6 +15,7 @@ const Search = () => {
   const { data: courses, isLoading, isError } = useGetCoursesQuery({});
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const router = useRouter();
+  const { user } = useUser();
 
   useEffect(() => {
     if (courses) {
@@ -49,8 +51,8 @@ const Search = () => {
       transition={{ duration: 0.5 }}
       className="search"
     >
-      <h1 className="search__title">List of available courses</h1>
-      <h2 className="search__subtitle">{courses.length} courses avaiable</h2>
+      <h1 className="search__title">Danh sách các khóa học hiện có</h1>
+      <h2 className="search__subtitle">{courses.length} khóa học hiện có</h2>
       <div className="search__content">
         <motion.div
           initial={{ y: 40, opacity: 0 }}
@@ -62,6 +64,7 @@ const Search = () => {
             <CourseCardSearch
               key={course.courseId}
               course={course}
+              userId={user?.id}
               isSelected={selectedCourse?.courseId === course.courseId}
               onClick={() => handleCourseSelect(course)}
             />
@@ -76,6 +79,7 @@ const Search = () => {
             className="search__selected-course"
           >
             <SelectedCourse
+              userId={user?.id}
               course={selectedCourse}
               handleEnrollNow={handleEnrollNow}
             />

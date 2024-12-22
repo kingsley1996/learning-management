@@ -1208,7 +1208,7 @@ input[type="color"] {
 }
 
 .nondashboard-navbar__search {
-  @apply flex justify-between items-center gap-14;
+  @apply flex justify-between items-center;
 }
 
 .nondashboard-navbar__brand {
@@ -1531,10 +1531,6 @@ input[type="color"] {
 }
 
 /* My custom style */
-/* .hero-figure {
-  height: 24.67em;
-} */
-
 .hero-figure #avatar-shapes {
   top: -7rem;
   width: 40em;
@@ -1542,4 +1538,5 @@ input[type="color"] {
   height: 126%;
   right: -5rem;
   position: absolute;
+  pointer-events: none;
 }

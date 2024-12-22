@@ -136,6 +136,7 @@ declare global {
 
   interface SearchCourseCardProps {
     course: Course;
+    userId?: string;
     isSelected?: boolean;
     onClick?: () => void;
   }
@@ -162,6 +163,7 @@ declare global {
   }
 
   interface SelectedCourseProps {
+    userId?: string;
     course: Course;
     handleEnrollNow: (courseId: string) => void;
   }

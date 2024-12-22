@@ -73,12 +73,13 @@ const Landing = () => {
         <section className="bg-white dark:bg-gray-900">
           <div className="py-4 px-4 mx-auto max-w-screen-xl text-center lg:py-8 lg:px-4">
             <a
-              href="#"
-              className="inline-flex justify-between items-center py-1 px-1 pr-4 mb-7 text-sm text-gray-700 bg-gray-100 rounded-full dark:bg-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700"
+              href="https://www.tiktok.com/@codewithsamuel96"
+              target="_blank"
+              className="inline-flex justify-between items-center py-1 px-1 pr-4 mb-7 text-sm text-slate-700 bg-gray-100 rounded-full dark:bg-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700"
               role="alert"
             >
-              <span className="text-xs bg-primary-600 rounded-full text-white px-4 py-1.5 mr-3">
-                New
+              <span className="text-xs bg-slate-950 text-slate-100 rounded-full text-white px-4 py-1.5 mr-3">
+                Tiktok
               </span>{" "}
               <span className="text-sm font-medium">CodeWithSamuel</span>
               <svg
