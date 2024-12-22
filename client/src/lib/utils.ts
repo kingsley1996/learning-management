@@ -411,7 +411,7 @@ export async function uploadImage(
     });
     toast.success(`Image uploaded successfully for course - ${courseId}`);
 
-    return { image: imageUrl };
+    return imageUrl;
   } catch (error) {
     console.error(`Failed to upload image for course - ${courseId}:`, error);
     throw error;

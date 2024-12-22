@@ -84,8 +84,11 @@ const CourseEditor = () => {
         id,
         getUploadVideoUrl
       );
+      let image = course?.image;
       const imageFile = methods.watch("image");
-      const { image } = await uploadImage(id, imageFile, getUploadImageUrl);
+      if (imageFile instanceof File) {
+        image = await uploadImage(id, imageFile, getUploadImageUrl);
+      }
 
       const formData = createCourseFormData(data, image, updatedSections);
 
