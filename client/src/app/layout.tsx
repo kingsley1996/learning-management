@@ -5,6 +5,7 @@ import Providers from "./providers";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "sonner";
 import { Suspense } from "react";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -33,6 +34,7 @@ export default function RootLayout({
             <Toaster richColors closeButton />
           </Providers>
         </body>
+        <GoogleAnalytics gaId="G-X8427M700F" />
       </html>
     </ClerkProvider>
   );
