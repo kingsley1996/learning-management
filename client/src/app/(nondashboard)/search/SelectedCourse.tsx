@@ -58,7 +58,7 @@ const SelectedCourse = ({
         {showEnrollButton && (
           <div className="selected-course__footer">
             <span className="selected-course__price">
-              {formatPrice(course.price)}
+              {course.isFreeCourse ? "Miễn phí" : formatPrice(course.price)}
             </span>
             <Button
               onClick={() => handleEnrollNow(course)}

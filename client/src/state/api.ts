@@ -191,7 +191,7 @@ export const api = createApi({
       Partial<EnrollFreeCourse>
     >({
       query: (freeCourse) => ({
-        url: "course/enroll-free",
+        url: "courses/enroll-free",
         method: "POST",
         body: freeCourse,
       }),

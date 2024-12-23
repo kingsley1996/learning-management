@@ -45,23 +45,28 @@ const Search = () => {
       courseId: course.courseId,
     };
     if (course.isFreeCourse) {
-      await enrollFreeCourse(data);
-      if (
-        course.sections &&
-        course.sections.length > 0 &&
-        course.sections[0].chapters.length > 0
-      ) {
-        const firstChapter = course.sections[0].chapters[0];
-        router.push(
-          `/user/courses/${course.courseId}/chapters/${firstChapter.chapterId}`,
-          {
+      try {
+        const res = await enrollFreeCourse(data);
+        if (res.error) throw res.error;
+        if (
+          course.sections &&
+          course.sections.length > 0 &&
+          course.sections[0].chapters.length > 0
+        ) {
+          const firstChapter = course.sections[0].chapters[0];
+          router.push(
+            `/user/courses/${course.courseId}/chapters/${firstChapter.chapterId}`,
+            {
+              scroll: false,
+            }
+          );
+        } else {
+          router.push(`/user/courses/${course.courseId}`, {
             scroll: false,
-          }
-        );
-      } else {
-        router.push(`/user/courses/${course.courseId}`, {
-          scroll: false,
-        });
+          });
+        }
+      } catch (err) {
+        console.log("Error Enroll Course:", err);
       }
     } else {
       router.push(`/checkout?step=1&id=${course.courseId}&showSignUp=false`, {
