@@ -304,7 +304,7 @@ input[type="color"] {
 }
 
 .landing-skeleton__subtitle {
-  @apply h-4 w-96 mb-2;
+  @apply h-4 w-72 mb-2;
 }
 
 .landing-skeleton__subtitle-secondary {
