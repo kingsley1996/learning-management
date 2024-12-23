@@ -186,6 +186,16 @@ export const api = createApi({
         body: transaction,
       }),
     }),
+    enrollFreeCourse: build.mutation<
+      EnrollFreeCourse,
+      Partial<EnrollFreeCourse>
+    >({
+      query: (freeCourse) => ({
+        url: "course/enroll-free",
+        method: "POST",
+        body: freeCourse,
+      }),
+    }),
 
     /* 
     ===============
@@ -263,4 +273,5 @@ export const {
   useGetUserEnrolledCoursesQuery,
   useGetUserCourseProgressQuery,
   useUpdateUserCourseProgressMutation,
+  useEnrollFreeCourseMutation,
 } = api;

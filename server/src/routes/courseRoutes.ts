@@ -8,6 +8,7 @@ import {
   updateCourse,
   getUploadVideoUrl,
   getUploadImageUrl,
+  enrollFreeCourse,
 } from "../controllers/courseController";
 import { requireAuth } from "@clerk/express";
 
@@ -32,5 +33,7 @@ router.post(
   requireAuth(),
   getUploadImageUrl
 );
+
+router.post("/enroll-free", requireAuth(), enrollFreeCourse);
 
 export default router;

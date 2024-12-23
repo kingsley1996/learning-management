@@ -35,7 +35,7 @@ declare global {
     };
   }
 
-  interface Course {
+  export interface Course {
     courseId: string;
     teacherId: string;
     teacherName: string;
@@ -62,6 +62,12 @@ declare global {
     paymentMethodId?: string;
     amount: number; // Stored in cents
     savePaymentMethod?: boolean;
+  }
+
+  interface EnrollFreeCourse {
+    userId: string;
+    dateTime?: string;
+    courseId: string;
   }
 
   interface DateRange {
@@ -166,7 +172,7 @@ declare global {
   interface SelectedCourseProps {
     userId?: string;
     course: Course;
-    handleEnrollNow: (courseId: string) => void;
+    handleEnrollNow: (course: Course) => void;
   }
 
   interface ToolbarProps {

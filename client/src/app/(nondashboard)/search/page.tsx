@@ -1,7 +1,7 @@
 "use client";
 
 import Loading from "@/components/Loading";
-import { useGetCoursesQuery } from "@/state/api";
+import { useEnrollFreeCourseMutation, useGetCoursesQuery } from "@/state/api";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
@@ -16,6 +16,7 @@ const Search = () => {
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const router = useRouter();
   const { user } = useUser();
+  const [enrollFreeCourse] = useEnrollFreeCourseMutation();
 
   useEffect(() => {
     if (courses) {
@@ -38,10 +39,35 @@ const Search = () => {
     });
   };
 
-  const handleEnrollNow = (courseId: string) => {
-    router.push(`/checkout?step=1&id=${courseId}&showSignUp=false`, {
-      scroll: false,
-    });
+  const handleEnrollNow = async (course: Course) => {
+    const data = {
+      userId: user?.id,
+      courseId: course.courseId,
+    };
+    if (course.isFreeCourse) {
+      await enrollFreeCourse(data);
+      if (
+        course.sections &&
+        course.sections.length > 0 &&
+        course.sections[0].chapters.length > 0
+      ) {
+        const firstChapter = course.sections[0].chapters[0];
+        router.push(
+          `/user/courses/${course.courseId}/chapters/${firstChapter.chapterId}`,
+          {
+            scroll: false,
+          }
+        );
+      } else {
+        router.push(`/user/courses/${course.courseId}`, {
+          scroll: false,
+        });
+      }
+    } else {
+      router.push(`/checkout?step=1&id=${course.courseId}&showSignUp=false`, {
+        scroll: false,
+      });
+    }
   };
 
   return (

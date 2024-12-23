@@ -13,8 +13,8 @@ const SelectedCourse = ({
   const hasEnrolled = userId
     ? course.enrollments?.some((enrollment) => enrollment.userId === userId)
     : false;
-  const showEnrollButton = !hasEnrolled && !course.isFreeCourse;
-  const showContinueButton = hasEnrolled || course.isFreeCourse;
+  const showEnrollButton = !hasEnrolled;
+  const showContinueButton = hasEnrolled;
   const router = useRouter();
 
   const handleGoToCourse = (course: Course) => {
@@ -61,7 +61,7 @@ const SelectedCourse = ({
               {formatPrice(course.price)}
             </span>
             <Button
-              onClick={() => handleEnrollNow(course.courseId)}
+              onClick={() => handleEnrollNow(course)}
               className="bg-primary-700 hover:bg-primary-600"
             >
               Tham Gia

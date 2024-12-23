@@ -3,6 +3,7 @@ import Course from "../models/courseModel";
 import AWS from "aws-sdk";
 import { v4 as uuidv4 } from "uuid";
 import { getAuth } from "@clerk/express";
+import UserCourseProgress from "../models/userCourseProgressModel";
 
 const s3 = new AWS.S3();
 
@@ -232,5 +233,53 @@ export const getUploadImageUrl = async (
     res
       .status(500)
       .json({ message: "Error generating upload URL for image", error });
+  }
+};
+
+export const enrollFreeCourse = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { userId, courseId } = req.body;
+
+  try {
+    // 1. get course info
+    const course = await Course.get(courseId);
+
+    // 2. create initial course progress
+    const initialProgress = new UserCourseProgress({
+      userId,
+      courseId,
+      enrollmentDate: new Date().toISOString(),
+      overallProgress: 0,
+      sections: course.sections.map((section: any) => ({
+        sectionId: section.sectionId,
+        chapters: section.chapters.map((chapter: any) => ({
+          chapterId: chapter.chapterId,
+          completed: false,
+        })),
+      })),
+      lastAccessedTimestamp: new Date().toISOString(),
+    });
+    await initialProgress.save();
+
+    // 4. add enrollment to relevant course
+    await Course.update(
+      { courseId },
+      {
+        $ADD: {
+          enrollments: [{ userId }],
+        },
+      }
+    );
+
+    res.json({
+      message: "Enroll Course Free successfully",
+      data: {
+        courseProgress: initialProgress,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error Enroll Course Free", error });
   }
 };
