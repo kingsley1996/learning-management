@@ -55,7 +55,7 @@ const Landing = () => {
     });
   };
 
-  if (isLoading) return <LoadingSkeleton />;
+  if (true) return <LoadingSkeleton />;
 
   return (
     <motion.div
