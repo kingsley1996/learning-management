@@ -186,41 +186,6 @@ const Landing = () => {
       </motion.div>
       <motion.div
         initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className="landing__hero"
-      >
-        <div className="landing__hero-content">
-          <h1 className="landing__title">Khoá Học</h1>
-          <p className="landing__description">
-            Đây là danh sách các khoá học bạn có thể tham gia.
-            <br />
-            Hãy tìm chủ đề mà bạn muốn tìm hiểu và tham gia học ngay nhé.
-          </p>
-          <div className="landing__cta">
-            <Link href="/search" scroll={false}>
-              <div className="landing__cta-button">Tìm Kiếm Khoá Học</div>
-            </Link>
-          </div>
-        </div>
-        <div className="landing__hero-images">
-          {["/hero1.jpg", "/hero2.jpg", "/hero3.jpg"].map((src, index) => (
-            <Image
-              key={src}
-              src={src}
-              alt={`Hero Banner ${index + 1}`}
-              fill
-              priority={index === currentImage}
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              className={`landing__hero-image ${
-                index === currentImage ? "landing__hero-image--active" : ""
-              }`}
-            />
-          ))}
-        </div>
-      </motion.div>
-      <motion.div
-        initial={{ y: 20, opacity: 0 }}
         whileInView={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5 }}
         viewport={{ amount: 0.3, once: true }}
