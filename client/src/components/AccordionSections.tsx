@@ -19,7 +19,7 @@ const AccordionSections = ({ sections }: AccordionSectionsProps) => {
           <AccordionTrigger className="accordion-section__trigger">
             <h5 className="accordion-section__title">{section.sectionTitle}</h5>
           </AccordionTrigger>
-          <AccordionContent className="accordion-section__content">
+          <AccordionContent className="accordion-section__content overflow-y-auto h-48">
             <ul>
               {section.chapters.map((chapter) => (
                 <li

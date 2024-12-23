@@ -45,6 +45,10 @@ const Search = () => {
       courseId: course.courseId,
     };
     if (course.isFreeCourse) {
+      if (!user?.id) {
+        router.push("/signin");
+        return;
+      }
       try {
         const res = await enrollFreeCourse(data);
         if (res.error) throw res.error;
