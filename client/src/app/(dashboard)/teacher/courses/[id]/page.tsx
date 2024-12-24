@@ -148,7 +148,7 @@ const CourseEditor = () => {
             }
           />
 
-          <div className="flex justify-between md:flex-row flex-col gap-10 mt-5 font-dm-sans">
+          <div className="flex justify-between md:flex-row flex-col gap-10 mt-5">
             <div className="basis-1/2">
               <div className="space-y-4">
                 <CustomFormField
