@@ -51,7 +51,7 @@ const Navbar = ({ isCoursePage }: { isCoursePage: boolean }) => {
                 userButtonBox: "scale-90 sm:scale-100",
               },
             }}
-            showName={true}
+            showName={false}
             userProfileMode="navigation"
             userProfileUrl={
               userRole === "teacher" ? "/teacher/profile" : "/user/profile"

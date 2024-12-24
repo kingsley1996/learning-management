@@ -70,6 +70,7 @@ const Landing = () => {
         transition={{ duration: 0.5 }}
         className="landing_main-hero"
       >
+        {/* SECTION HERO */}
         <section className="bg-white dark:bg-gray-900">
           <div className="py-4 px-4 mx-auto max-w-screen-xl text-center lg:py-8 lg:px-4">
             <a
@@ -80,7 +81,7 @@ const Landing = () => {
             >
               <span className="text-xs bg-slate-950 text-slate-100 rounded-full text-white px-4 py-1.5 mr-3">
                 Tiktok
-              </span>{" "}
+              </span>
               <span className="text-sm font-medium">CodeWithSamuel</span>
               <svg
                 className="ml-2 w-5 h-5"
@@ -97,10 +98,10 @@ const Landing = () => {
             </a>
             <figure className="flex justify-between relative hero-figure">
               <div>
-                <h1 className="font-mono mb-4 text-6xl font-extrabold tracking-tight leading-none bg-gradient-to-r from-purple-600 via-purple-500 to-indigo-400 text-transparent bg-clip-text md:text-5xl lg:text-6xl dark:text-white">
+                <h1 className="font-mono mb-4 text-6xl font-extrabold tracking-tight leading-none bg-gradient-to-r text-gradient text-transparent bg-clip-text md:text-5xl lg:text-6xl text-white">
                   Học lập trình cùng Samuel
                 </h1>
-                <p className="font-sans mb-8 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 xl:px-48 dark:text-gray-400">
+                <p className="font-sans mb-8 text-lg font-normal lg:text-xl sm:px-16 xl:px-48 text-gray-400">
                   Mình là Samuel, một Web Developer với hơn 5 năm kinh nghiệm.
                   Mình đang trong quá trình xây dựng một nơi để giúp các bạn mới
                   có thể tiếp cận với lập trình một cách dễ dàng và có hệ thống.
@@ -108,7 +109,7 @@ const Landing = () => {
                 <div className="flex flex-col mb-8 lg:mb-8 space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
                   <Link
                     href="/search"
-                    className="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900"
+                    className="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-900"
                     scroll={false}
                   >
                     Xem thêm
@@ -127,7 +128,7 @@ const Landing = () => {
                   </Link>
                   <Link
                     href="/user/courses"
-                    className="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-gray-100 rounded-lg border border-gray-300 hover:bg-gray-700 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
+                    className="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-gray-100 rounded-lg border focus:ring-4 text-white border-gray-700 hover:bg-gray-700 focus:ring-gray-800"
                     scroll={false}
                   >
                     <svg
@@ -184,50 +185,995 @@ const Landing = () => {
           </div>
         </section>
       </motion.div>
+      {/* SECTION PREVIEW */}
+      <div className="relative z-1">
+        <div className="w-full flex flex-col items-center mt-16 mb-10 relative">
+          <img
+            alt="hand"
+            loading="lazy"
+            width="300"
+            height="300"
+            decoding="async"
+            data-nimg="1"
+            className="absolute 2xl:w-[400px] md:hidden xl:block xl:w-[290px] xl:h-[290px] 2xl:h-[400px] left-0 top-[50%] md:top-[31%] 2xl:top-[34%] z-10 w-[100px] h-[100px] sm:w-[150px] sm:h-[150px] md:w-[300px] md:h-[300px]"
+            srcSet="/creative-hand.webp 1x, /creative-hand.webp 2x"
+            src="/creative-hand.webp"
+            style={{ color: "transparent" }}
+          ></img>
+          <div className="absolute md:top-16 2xl:top-24 top-0 md:w-[80%] 2xl:w-[60%] m-auto z-20 w-[95%]">
+            <h1 className="text-[25px] font-[500] font-Poppins text-center py-2 !font-DM_Sans leading-[30px] md:!text-[4xl] md:!leading-[50px] xl:!text-5xl xl:!leading-[60px]">
+              CodeWithSamuel đồng hành cùng bạn trong quá trình học lập trình.
+              Hãy cùng tìm hiểu
+              <span className="text-gradient"> cách để sử dụng </span>
+              trang web một cách hiệu quả nhé.
+            </h1>
+          </div>
+          <div className="!mt-[9rem] md:!mt-0 w-[300px] h-[300px] flex items-center justify-center sm:w-[400px] sm:h-[400px] md:w-[700px] md:h-[700px] xl:w-[800px] xl:h-[800px] 2xl:w-[900px] 2xl:h-[900px] bg-transparent border-[#3f3f47] border-[1px] rounded-full relative">
+            <span className="tp-circle-1"></span>
+            <span className="tp-circle-2"></span>
+            <div className="w-full flex flex-col md:flex-row items-center justify-center">
+              <div className="md:w-[60px] md:h-[60px] w-[55px] h-[55px] cursor-pointer bg-transparent flex items-center justify-center border border-[#000] border-white rounded-full">
+                <svg
+                  stroke="currentColor"
+                  fill="currentColor"
+                  strokeWidth="0"
+                  viewBox="0 0 24 24"
+                  height="35"
+                  width="35"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <g id="Play_1">
+                    <path d="M6.562,21.94a2.5,2.5,0,0,1-2.5-2.5V4.56A2.5,2.5,0,0,1,7.978,2.5L18.855,9.939a2.5,2.5,0,0,1,0,4.12L7.977,21.5A2.5,2.5,0,0,1,6.562,21.94Zm0-18.884a1.494,1.494,0,0,0-.7.177,1.477,1.477,0,0,0-.8,1.327V19.439a1.5,1.5,0,0,0,2.35,1.235l10.877-7.44a1.5,1.5,0,0,0,0-2.471L7.413,3.326A1.491,1.491,0,0,0,6.564,3.056Z"></path>
+                  </g>
+                </svg>
+              </div>
+              <span className="text-[16px] font-Poppins pt-2 md:pl-3 cursor-pointer md:!text-[18px]">
+                Coming Soon...
+              </span>
+            </div>
+          </div>
+          <div className="hidden md:grid gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 md:absolute bottom-28">
+            <button
+              className="flex flex-col relative overflow-hidden h-auto text-foreground box-border bg-content1 outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 shadow-small rounded-large cursor-pointer transition-transform-background motion-reduce:transition-none data-[pressed=true]:scale-[0.97] tap-highlight-transparent"
+              type="button"
+              role="button"
+            >
+              <div className="relative flex p-3 flex-auto flex-col place-content-inherit align-items-inherit h-auto break-words text-left overflow-y-auto subpixel-antialiased bg-[#0d0da5] bg-opacity-[.7] shadow w-full">
+                <div className="flex items-center p-8">
+                  <svg
+                    stroke="currentColor"
+                    fill="none"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-7xl icon-gradient text-white"
+                    height="1em"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M14 19a6 6 0 0 0-12 0"></path>
+                    <circle cx="8" cy="9" r="4"></circle>
+                    <path d="M22 19a6 6 0 0 0-6-6 4 4 0 1 0 0-8"></path>
+                  </svg>
+                  <div className="pl-3">
+                    <h5 className="text-[25px] font-[500] font-Poppins text-center py-2 text-white">
+                      500+
+                    </h5>
+                    <span className="text-[16px] font-Poppins text-white">
+                      Thành Viên Đăng Ký
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </button>
+            <button
+              className="flex flex-col relative overflow-hidden h-auto text-foreground box-border bg-content1 outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 shadow-small rounded-large cursor-pointer transition-transform-background motion-reduce:transition-none data-[pressed=true]:scale-[0.97] tap-highlight-transparent"
+              type="button"
+              role="button"
+            >
+              <div className="relative flex p-3 flex-auto flex-col place-content-inherit align-items-inherit h-auto break-words text-left overflow-y-auto subpixel-antialiased bg-[#460c7f] bg-opacity-[.7] shadow w-full">
+                <div className="flex items-center p-8">
+                  <svg
+                    stroke="currentColor"
+                    fill="currentColor"
+                    strokeWidth="0"
+                    viewBox="0 0 512 512"
+                    className="text-7xl text-white"
+                    height="1em"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fill="none"
+                      strokeLinejoin="round"
+                      strokeWidth="32"
+                      d="M480 208H308L256 48l-52 160H32l140 96-54 160 138-100 138 100-54-160z"
+                    ></path>
+                  </svg>
+                  <div className="pl-3">
+                    <h5 className="text-[25px] font-[500] font-Poppins text-center py-2 text-white">
+                      4.9/5
+                    </h5>
+                    <span className="text-[16px] font-Poppins text-white">
+                      Đánh Giá Học Viên
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </button>
+            <button
+              className="flex flex-col relative overflow-hidden h-auto text-foreground box-border bg-content1 outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 shadow-small rounded-large cursor-pointer transition-transform-background motion-reduce:transition-none data-[pressed=true]:scale-[0.97] tap-highlight-transparent"
+              type="button"
+              role="button"
+            >
+              <div className="relative flex p-3 flex-auto flex-col place-content-inherit align-items-inherit h-auto break-words text-left overflow-y-auto subpixel-antialiased bg-[rgb(54,186,126)] shadow w-full">
+                <div className="flex items-center p-8">
+                  <svg
+                    stroke="currentColor"
+                    fill="currentColor"
+                    strokeWidth="0"
+                    viewBox="0 0 24 24"
+                    className="text-7xl text-white"
+                    height="1em"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <g id="Globe">
+                      <path d="M14.645,2.428a8.1,8.1,0,0,0-1.61-.3,9.332,9.332,0,0,0-3.6.28l-.07.02a9.928,9.928,0,0,0,.01,19.15,9.091,9.091,0,0,0,2.36.34,1.274,1.274,0,0,0,.27.02,9.65,9.65,0,0,0,2.63-.36,9.931,9.931,0,0,0,.01-19.15Zm-.27.96a8.943,8.943,0,0,1,5.84,5.11h-4.26a13.778,13.778,0,0,0-2.74-5.35A8.254,8.254,0,0,1,14.375,3.388Zm-2.37-.09a12.78,12.78,0,0,1,2.91,5.2H9.075A12.545,12.545,0,0,1,12.005,3.3Zm3.16,6.2a13.193,13.193,0,0,1,0,5.01H8.845a12.185,12.185,0,0,1-.25-2.5,12.353,12.353,0,0,1,.25-2.51Zm-5.6-6.09.07-.02a9.152,9.152,0,0,1,1.16-.23A13.618,13.618,0,0,0,8.045,8.5H3.8A9,9,0,0,1,9.565,3.408Zm-6.5,8.6a8.71,8.71,0,0,1,.37-2.51h4.39a13.95,13.95,0,0,0-.23,2.51,13.757,13.757,0,0,0,.23,2.5H3.435A8.591,8.591,0,0,1,3.065,12.008Zm6.57,8.61a8.9,8.9,0,0,1-5.84-5.11h4.24a13.632,13.632,0,0,0,2.77,5.35A8.1,8.1,0,0,1,9.635,20.618Zm-.56-5.11h5.84a12.638,12.638,0,0,1-2.91,5.21A12.872,12.872,0,0,1,9.075,15.508Zm5.3,5.11a11.551,11.551,0,0,1-1.17.24,13.8,13.8,0,0,0,2.75-5.35h4.26A8.924,8.924,0,0,1,14.375,20.618Zm1.8-6.11a13.611,13.611,0,0,0,0-5.01h4.39a8.379,8.379,0,0,1,.37,2.51,8.687,8.687,0,0,1-.36,2.5Z"></path>
+                    </g>
+                  </svg>
+                  <div className="pl-3">
+                    <h5 className="text-[25px] font-[500] font-Poppins text-center py-2 text-white">
+                      1k+
+                    </h5>
+                    <span className="text-[16px] font-Poppins text-white">
+                      Lượt Truy Cập Hàng Ngày
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+      {/* SECTION TRUSTED */}
+      <div className="mb-10">
+        <br />
+        <br />
+        <h5 className="text-[25px] font-[500] font-Poppins text-center py-2 !text-3xl md:!text-5xl capitalize mb-[-3%]">
+          <span className="text-gradient">CodeWithSamuel</span> trusted by
+        </h5>
+        <div className="w-[80%] sm:w-[70%] m-auto block">
+          <div className="rfm-marquee-container w-full flex">
+            <div className="rfm-marquee">
+              <div className="rfm-initial-child-container">
+                <div className="rfm-child">
+                  <img
+                    alt="partner"
+                    loading="lazy"
+                    width="220"
+                    height="220"
+                    decoding="async"
+                    data-nimg="1"
+                    className="md:mx-8 w-[150px] md:w-[220px]  mx-3"
+                    src="/brand/clerk-logo.svg"
+                    style={{ color: "transparent" }}
+                  />
+                </div>
+                <div className="rfm-child">
+                  <img
+                    alt="partner"
+                    loading="lazy"
+                    width="220"
+                    height="220"
+                    decoding="async"
+                    data-nimg="1"
+                    className="md:mx-8 w-[150px] md:w-[220px]  mx-3"
+                    src="/brand/upstash-logo.svg"
+                    style={{ color: "transparent" }}
+                  />
+                </div>
+                <div className="rfm-child">
+                  <img
+                    alt="partner"
+                    loading="lazy"
+                    width="220"
+                    height="220"
+                    decoding="async"
+                    data-nimg="1"
+                    className="md:mx-8 w-[150px] md:w-[220px]  mx-3"
+                    src="/brand/one-entry.svg"
+                    style={{ color: "transparent" }}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="rfm-marquee">
+              <div className="rfm-initial-child-container">
+                <div className="rfm-child">
+                  <img
+                    alt="partner"
+                    loading="lazy"
+                    width="220"
+                    height="220"
+                    decoding="async"
+                    data-nimg="1"
+                    className="md:mx-8 w-[150px] md:w-[220px]  mx-3"
+                    src="/brand/clerk-logo.svg"
+                    style={{ color: "transparent" }}
+                  />
+                </div>
+                <div className="rfm-child">
+                  <img
+                    alt="partner"
+                    loading="lazy"
+                    width="220"
+                    height="220"
+                    decoding="async"
+                    data-nimg="1"
+                    className="md:mx-8 w-[150px] md:w-[220px]  mx-3"
+                    src="/brand/upstash-logo.svg"
+                    style={{ color: "transparent" }}
+                  />
+                </div>
+                <div className="rfm-child">
+                  <img
+                    alt="partner"
+                    loading="lazy"
+                    width="220"
+                    height="220"
+                    decoding="async"
+                    data-nimg="1"
+                    className="md:mx-8 w-[150px] md:w-[220px]  mx-3"
+                    src="/brand/one-entry.svg"
+                    style={{ color: "transparent" }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* SECTION POPULAR COURSES */}
       <motion.div
         initial={{ y: 20, opacity: 0 }}
         whileInView={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5 }}
         viewport={{ amount: 0.3, once: true }}
-        className="landing__featured"
       >
-        <h2 className="landing__featured-title">Các Khoá Học Hot</h2>
-        <p className="landing__featured-description">
-          Từ cơ bản đến nâng cao, mình đều có các khóa học phù hợp dành riêng
-          cho bạn và chuẩn bị cho bạn toàn bộ hành trang để có thể tham gia vào
-          thị trường công nghệ.
-        </p>
-
-        <div className="landing__tags">
-          {[
-            "web development",
-            "enterprise IT",
-            "react nextjs",
-            "javascript",
-            "backend development",
-          ].map((tag, index) => (
-            <span key={index} className="landing__tag">
-              {tag}
-            </span>
-          ))}
+        <div className="w-[95%] md:w-[85%] m-auto">
+          <h1 className="text-[25px] font-[500] font-Poppins text-center py-2 !text-3xl md:!text-5xl">
+            <span className="text-gradient">Khoá Học</span> Phổ Biến
+          </h1>
+          <p className="text-[16px] font-Poppins relative text-center py-3">
+            <span className="dot"></span> Cung cấp những kỹ năng cần thiết cho
+            công việc lập trình của bạn
+          </p>
+          <br />
+          <br />
+          <div className="grid grid-cols-1 gap-[20px] md:grid-cols-2 md:gap-[25px] lg:grid-cols-3 lg:gap-[25px] xl:grid-cols-3 xl:gap-[35px] mb-12 border-0 md:pl-5">
+            {courses &&
+              courses.slice(0, 4).map((course, index) => (
+                <motion.div
+                  key={course.courseId}
+                  initial={{ y: 50, opacity: 0 }}
+                  whileInView={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.5, delay: index * 0.2 }}
+                  viewport={{ amount: 0.4 }}
+                >
+                  <CourseCardSearch
+                    course={course}
+                    onClick={() => handleCourseClick(course.courseId)}
+                  />
+                </motion.div>
+              ))}
+          </div>
         </div>
-
-        <div className="landing__courses">
-          {courses &&
-            courses.slice(0, 4).map((course, index) => (
-              <motion.div
-                key={course.courseId}
-                initial={{ y: 50, opacity: 0 }}
-                whileInView={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.5, delay: index * 0.2 }}
-                viewport={{ amount: 0.4 }}
-              >
-                <CourseCardSearch
-                  course={course}
-                  onClick={() => handleCourseClick(course.courseId)}
-                />
-              </motion.div>
-            ))}
+      </motion.div>
+      {/* SECTION STUDENT'S FEEDBACK */}
+      <motion.div
+        initial={{ y: 20, opacity: 0 }}
+        whileInView={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        viewport={{ amount: 0.3, once: true }}
+      >
+        <div>
+          <br />
+          <br />
+          <h1 className="text-[25px] font-[500] font-Poppins text-center py-2 md:!text-5xl !text-3xl">
+            Học Viên <span className="text-gradient">Đánh Giá</span>
+          </h1>
+          <p className="text-[16px] font-Poppins relative text-center py-5">
+            <span className="dot"></span> Cùng xem những đánh giá từ học
+            viên nhé
+          </p>
+          <br />
+          <div
+            className="max-w-[95%] mx-auto p-4 hidden md:block"
+            style={{ columnCount: 3, columnGap: "1rem" }}
+          >
+            {/* REVIEW 1 */}
+            <div className="break-inside-avoid mb-5">
+              <div className="flex-col relative overflow-hidden text-foreground box-border outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 transition-transform-background motion-reduce:transition-none w-full my-5 md:my-0 h-min block bg-[#ffffff3f] bg-slate-500 bg-opacity-[0.20] border border-[#ffffff1d] backdrop-blur shadow-[bg-slate-700] rounded-lg p-3 shadow-inner">
+                <div className="flex w-full">
+                  <div className="flex p-3 z-10 w-full justify-start shrink-0 overflow-inherit color-inherit subpixel-antialiased rounded-t-large items-center">
+                    <div className="w-[55px]">
+                      <span
+                        tabIndex={-1}
+                        className="flex relative justify-center items-center box-border overflow-hidden align-middle z-0 outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 w-14 h-14 text-small bg-default text-default-foreground rounded-full"
+                      >
+                        <img
+                          src="/avatar.png"
+                          className="flex object-cover w-full h-full transition-opacity !duration-500 opacity-0 data-[loaded=true]:opacity-100"
+                          alt=""
+                          data-loaded="true"
+                        />
+                      </span>
+                    </div>
+                    <div className="flex justify-between w-full">
+                      <div className="pl-4">
+                        <h5 className="md:text-[20px] mb-2">
+                          Nguyễn Quang Hùng
+                        </h5>
+                        <h6 className="text-[14px] text-[#ffffffab]">
+                          Web developer
+                        </h6>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="">
+                  <div className="flex mt-1 ml-2 md:mt-0 md:ml-0">
+                    <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      strokeWidth="0"
+                      viewBox="0 0 1024 1024"
+                      color="#f6b100"
+                      className="mr-2 cursor-pointer"
+                      style={{ color: "#f6b100" }}
+                      height="20"
+                      width="20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M908.1 353.1l-253.9-36.9L540.7 86.1c-3.1-6.3-8.2-11.4-14.5-14.5-15.8-7.8-35-1.3-42.9 14.5L369.8 316.2l-253.9 36.9c-7 1-13.4 4.3-18.3 9.3a32.05 32.05 0 0 0 .6 45.3l183.7 179.1-43.4 252.9a31.95 31.95 0 0 0 46.4 33.7L512 754l227.1 119.4c6.2 3.3 13.4 4.4 20.3 3.2 17.4-3 29.1-19.5 26.1-36.9l-43.4-252.9 183.7-179.1c5-4.9 8.3-11.3 9.3-18.3 2.7-17.5-9.5-33.7-27-36.3z"></path>
+                    </svg>
+                    <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      strokeWidth="0"
+                      viewBox="0 0 1024 1024"
+                      color="#f6b100"
+                      className="mr-2 cursor-pointer"
+                      style={{ color: "#f6b100" }}
+                      height="20"
+                      width="20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M908.1 353.1l-253.9-36.9L540.7 86.1c-3.1-6.3-8.2-11.4-14.5-14.5-15.8-7.8-35-1.3-42.9 14.5L369.8 316.2l-253.9 36.9c-7 1-13.4 4.3-18.3 9.3a32.05 32.05 0 0 0 .6 45.3l183.7 179.1-43.4 252.9a31.95 31.95 0 0 0 46.4 33.7L512 754l227.1 119.4c6.2 3.3 13.4 4.4 20.3 3.2 17.4-3 29.1-19.5 26.1-36.9l-43.4-252.9 183.7-179.1c5-4.9 8.3-11.3 9.3-18.3 2.7-17.5-9.5-33.7-27-36.3z"></path>
+                    </svg>
+                    <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      strokeWidth="0"
+                      viewBox="0 0 1024 1024"
+                      color="#f6b100"
+                      className="mr-2 cursor-pointer"
+                      style={{ color: "#f6b100" }}
+                      height="20"
+                      width="20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M908.1 353.1l-253.9-36.9L540.7 86.1c-3.1-6.3-8.2-11.4-14.5-14.5-15.8-7.8-35-1.3-42.9 14.5L369.8 316.2l-253.9 36.9c-7 1-13.4 4.3-18.3 9.3a32.05 32.05 0 0 0 .6 45.3l183.7 179.1-43.4 252.9a31.95 31.95 0 0 0 46.4 33.7L512 754l227.1 119.4c6.2 3.3 13.4 4.4 20.3 3.2 17.4-3 29.1-19.5 26.1-36.9l-43.4-252.9 183.7-179.1c5-4.9 8.3-11.3 9.3-18.3 2.7-17.5-9.5-33.7-27-36.3z"></path>
+                    </svg>
+                    <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      strokeWidth="0"
+                      viewBox="0 0 1024 1024"
+                      color="#f6b100"
+                      className="mr-2 cursor-pointer"
+                      style={{ color: "#f6b100" }}
+                      height="20"
+                      width="20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M908.1 353.1l-253.9-36.9L540.7 86.1c-3.1-6.3-8.2-11.4-14.5-14.5-15.8-7.8-35-1.3-42.9 14.5L369.8 316.2l-253.9 36.9c-7 1-13.4 4.3-18.3 9.3a32.05 32.05 0 0 0 .6 45.3l183.7 179.1-43.4 252.9a31.95 31.95 0 0 0 46.4 33.7L512 754l227.1 119.4c6.2 3.3 13.4 4.4 20.3 3.2 17.4-3 29.1-19.5 26.1-36.9l-43.4-252.9 183.7-179.1c5-4.9 8.3-11.3 9.3-18.3 2.7-17.5-9.5-33.7-27-36.3z"></path>
+                    </svg>
+                    <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      strokeWidth="0"
+                      viewBox="0 0 1024 1024"
+                      color="#f6b100"
+                      className="mr-2 cursor-pointer"
+                      style={{ color: "#f6b100" }}
+                      height="20"
+                      width="20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M908.1 353.1l-253.9-36.9L540.7 86.1c-3.1-6.3-8.2-11.4-14.5-14.5-15.8-7.8-35-1.3-42.9 14.5L369.8 316.2l-253.9 36.9c-7 1-13.4 4.3-18.3 9.3a32.05 32.05 0 0 0 .6 45.3l183.7 179.1-43.4 252.9a31.95 31.95 0 0 0 46.4 33.7L512 754l227.1 119.4c6.2 3.3 13.4 4.4 20.3 3.2 17.4-3 29.1-19.5 26.1-36.9l-43.4-252.9 183.7-179.1c5-4.9 8.3-11.3 9.3-18.3 2.7-17.5-9.5-33.7-27-36.3z"></path>
+                    </svg>
+                  </div>
+                </div>
+                <p className="pt-2 px-2 font-Poppins">
+                  Cảm ơn bạn vì kênh hướng dẫn lập trình rất bổ ích! Khả năng
+                  chia nhỏ các chủ đề phức tạp thành những phần dễ hiểu của bạn,
+                  cùng với việc bao quát nhiều ngôn ngữ lập trình và chủ đề khác
+                  nhau, thật sự rất ấn tượng. Những ví dụ thực tế và ứng dụng
+                  thực tiễn mà bạn lồng ghép vào giúp củng cố kiến thức lý
+                  thuyết và mang lại nhiều góc nhìn giá trị!
+                </p>
+              </div>
+            </div>
+            {/* REVIEW 2 */}
+            <div className="break-inside-avoid mb-5">
+              <div className="flex-col relative overflow-hidden text-foreground box-border outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 transition-transform-background motion-reduce:transition-none w-full my-5 md:my-0 h-min block bg-[#ffffff3f] bg-slate-500 bg-opacity-[0.20] border border-[#ffffff1d] backdrop-blur shadow-[bg-slate-700] rounded-lg p-3 shadow-inner">
+                <div className="flex w-full">
+                  <div className="flex p-3 z-10 w-full justify-start shrink-0 overflow-inherit color-inherit subpixel-antialiased rounded-t-large items-center">
+                    <div className="w-[55px]">
+                      <span
+                        tabIndex={-1}
+                        className="flex relative justify-center items-center box-border overflow-hidden align-middle z-0 outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 w-14 h-14 text-small bg-default text-default-foreground rounded-full"
+                      >
+                        <img
+                          src="/avatar.png"
+                          className="flex object-cover w-full h-full transition-opacity !duration-500 opacity-0 data-[loaded=true]:opacity-100"
+                          alt=""
+                          data-loaded="true"
+                        />
+                      </span>
+                    </div>
+                    <div className="flex justify-between w-full">
+                      <div className="pl-4">
+                        <h5 className="md:text-[20px] mb-2">Trần Minh</h5>
+                        <h6 className="text-[14px] text-[#ffffffab]">
+                          Junior Web Developer
+                        </h6>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="">
+                  <div className="flex mt-1 ml-2 md:mt-0 md:ml-0">
+                    <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      strokeWidth="0"
+                      viewBox="0 0 1024 1024"
+                      color="#f6b100"
+                      className="mr-2 cursor-pointer"
+                      style={{ color: "#f6b100" }}
+                      height="20"
+                      width="20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M908.1 353.1l-253.9-36.9L540.7 86.1c-3.1-6.3-8.2-11.4-14.5-14.5-15.8-7.8-35-1.3-42.9 14.5L369.8 316.2l-253.9 36.9c-7 1-13.4 4.3-18.3 9.3a32.05 32.05 0 0 0 .6 45.3l183.7 179.1-43.4 252.9a31.95 31.95 0 0 0 46.4 33.7L512 754l227.1 119.4c6.2 3.3 13.4 4.4 20.3 3.2 17.4-3 29.1-19.5 26.1-36.9l-43.4-252.9 183.7-179.1c5-4.9 8.3-11.3 9.3-18.3 2.7-17.5-9.5-33.7-27-36.3z"></path>
+                    </svg>
+                    <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      strokeWidth="0"
+                      viewBox="0 0 1024 1024"
+                      color="#f6b100"
+                      className="mr-2 cursor-pointer"
+                      style={{ color: "#f6b100" }}
+                      height="20"
+                      width="20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M908.1 353.1l-253.9-36.9L540.7 86.1c-3.1-6.3-8.2-11.4-14.5-14.5-15.8-7.8-35-1.3-42.9 14.5L369.8 316.2l-253.9 36.9c-7 1-13.4 4.3-18.3 9.3a32.05 32.05 0 0 0 .6 45.3l183.7 179.1-43.4 252.9a31.95 31.95 0 0 0 46.4 33.7L512 754l227.1 119.4c6.2 3.3 13.4 4.4 20.3 3.2 17.4-3 29.1-19.5 26.1-36.9l-43.4-252.9 183.7-179.1c5-4.9 8.3-11.3 9.3-18.3 2.7-17.5-9.5-33.7-27-36.3z"></path>
+                    </svg>
+                    <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      strokeWidth="0"
+                      viewBox="0 0 1024 1024"
+                      color="#f6b100"
+                      className="mr-2 cursor-pointer"
+                      style={{ color: "#f6b100" }}
+                      height="20"
+                      width="20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M908.1 353.1l-253.9-36.9L540.7 86.1c-3.1-6.3-8.2-11.4-14.5-14.5-15.8-7.8-35-1.3-42.9 14.5L369.8 316.2l-253.9 36.9c-7 1-13.4 4.3-18.3 9.3a32.05 32.05 0 0 0 .6 45.3l183.7 179.1-43.4 252.9a31.95 31.95 0 0 0 46.4 33.7L512 754l227.1 119.4c6.2 3.3 13.4 4.4 20.3 3.2 17.4-3 29.1-19.5 26.1-36.9l-43.4-252.9 183.7-179.1c5-4.9 8.3-11.3 9.3-18.3 2.7-17.5-9.5-33.7-27-36.3z"></path>
+                    </svg>
+                    <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      strokeWidth="0"
+                      viewBox="0 0 1024 1024"
+                      color="#f6b100"
+                      className="mr-2 cursor-pointer"
+                      style={{ color: "#f6b100" }}
+                      height="20"
+                      width="20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M908.1 353.1l-253.9-36.9L540.7 86.1c-3.1-6.3-8.2-11.4-14.5-14.5-15.8-7.8-35-1.3-42.9 14.5L369.8 316.2l-253.9 36.9c-7 1-13.4 4.3-18.3 9.3a32.05 32.05 0 0 0 .6 45.3l183.7 179.1-43.4 252.9a31.95 31.95 0 0 0 46.4 33.7L512 754l227.1 119.4c6.2 3.3 13.4 4.4 20.3 3.2 17.4-3 29.1-19.5 26.1-36.9l-43.4-252.9 183.7-179.1c5-4.9 8.3-11.3 9.3-18.3 2.7-17.5-9.5-33.7-27-36.3z"></path>
+                    </svg>
+                    <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      strokeWidth="0"
+                      viewBox="0 0 1024 1024"
+                      color="#f6b100"
+                      className="mr-2 cursor-pointer"
+                      style={{ color: "#f6b100" }}
+                      height="20"
+                      width="20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M908.1 353.1l-253.9-36.9L540.7 86.1c-3.1-6.3-8.2-11.4-14.5-14.5-15.8-7.8-35-1.3-42.9 14.5L369.8 316.2l-253.9 36.9c-7 1-13.4 4.3-18.3 9.3a32.05 32.05 0 0 0 .6 45.3l183.7 179.1-43.4 252.9a31.95 31.95 0 0 0 46.4 33.7L512 754l227.1 119.4c6.2 3.3 13.4 4.4 20.3 3.2 17.4-3 29.1-19.5 26.1-36.9l-43.4-252.9 183.7-179.1c5-4.9 8.3-11.3 9.3-18.3 2.7-17.5-9.5-33.7-27-36.3z"></path>
+                    </svg>
+                  </div>
+                </div>
+                <p className="pt-2 px-2 font-Poppins">
+                  Nội dung của bạn thật sự rất đặc biệt. Điều mà mình thích nhất
+                  chính là các video đều có thời lượng dài, giúp bạn trình bày
+                  mọi thứ một cách chi tiết. Nhờ vậy, ngay cả những người ở mức
+                  độ mới bắt đầu cũng có thể hoàn thành một dự án hoàn chỉnh sau
+                  khi xem xong. Cảm ơn bạn rất nhiều! Mình rất háo hức chờ đợi
+                  những video tiếp theo. Hãy tiếp tục công việc tuyệt vời này
+                  nhé!
+                </p>
+              </div>
+            </div>
+            {/* REVIEW 3 */}
+            <div className="break-inside-avoid mb-5">
+              <div className="flex-col relative overflow-hidden text-foreground box-border outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 transition-transform-background motion-reduce:transition-none w-full my-5 md:my-0 h-min block bg-[#ffffff3f] bg-slate-500 bg-opacity-[0.20] border border-[#ffffff1d] backdrop-blur shadow-[bg-slate-700] rounded-lg p-3 shadow-inner">
+                <div className="flex w-full">
+                  <div className="flex p-3 z-10 w-full justify-start shrink-0 overflow-inherit color-inherit subpixel-antialiased rounded-t-large items-center">
+                    <div className="w-[55px]">
+                      <span
+                        tabIndex={-1}
+                        className="flex relative justify-center items-center box-border overflow-hidden align-middle z-0 outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 w-14 h-14 text-small bg-default text-default-foreground rounded-full"
+                      >
+                        <img
+                          src="/avatar.png"
+                          className="flex object-cover w-full h-full transition-opacity !duration-500 opacity-0 data-[loaded=true]:opacity-100"
+                          alt=""
+                          data-loaded="true"
+                        />
+                      </span>
+                    </div>
+                    <div className="flex justify-between w-full">
+                      <div className="pl-4">
+                        <h5 className="md:text-[20px] mb-2">Joseph Le</h5>
+                        <h6 className="text-[14px] text-[#ffffffab]">
+                          Full stack web developer
+                        </h6>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="">
+                  <div className="flex mt-1 ml-2 md:mt-0 md:ml-0">
+                    <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      strokeWidth="0"
+                      viewBox="0 0 1024 1024"
+                      color="#f6b100"
+                      className="mr-2 cursor-pointer"
+                      style={{ color: "#f6b100" }}
+                      height="20"
+                      width="20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M908.1 353.1l-253.9-36.9L540.7 86.1c-3.1-6.3-8.2-11.4-14.5-14.5-15.8-7.8-35-1.3-42.9 14.5L369.8 316.2l-253.9 36.9c-7 1-13.4 4.3-18.3 9.3a32.05 32.05 0 0 0 .6 45.3l183.7 179.1-43.4 252.9a31.95 31.95 0 0 0 46.4 33.7L512 754l227.1 119.4c6.2 3.3 13.4 4.4 20.3 3.2 17.4-3 29.1-19.5 26.1-36.9l-43.4-252.9 183.7-179.1c5-4.9 8.3-11.3 9.3-18.3 2.7-17.5-9.5-33.7-27-36.3z"></path>
+                    </svg>
+                    <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      strokeWidth="0"
+                      viewBox="0 0 1024 1024"
+                      color="#f6b100"
+                      className="mr-2 cursor-pointer"
+                      style={{ color: "#f6b100" }}
+                      height="20"
+                      width="20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M908.1 353.1l-253.9-36.9L540.7 86.1c-3.1-6.3-8.2-11.4-14.5-14.5-15.8-7.8-35-1.3-42.9 14.5L369.8 316.2l-253.9 36.9c-7 1-13.4 4.3-18.3 9.3a32.05 32.05 0 0 0 .6 45.3l183.7 179.1-43.4 252.9a31.95 31.95 0 0 0 46.4 33.7L512 754l227.1 119.4c6.2 3.3 13.4 4.4 20.3 3.2 17.4-3 29.1-19.5 26.1-36.9l-43.4-252.9 183.7-179.1c5-4.9 8.3-11.3 9.3-18.3 2.7-17.5-9.5-33.7-27-36.3z"></path>
+                    </svg>
+                    <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      strokeWidth="0"
+                      viewBox="0 0 1024 1024"
+                      color="#f6b100"
+                      className="mr-2 cursor-pointer"
+                      style={{ color: "#f6b100" }}
+                      height="20"
+                      width="20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M908.1 353.1l-253.9-36.9L540.7 86.1c-3.1-6.3-8.2-11.4-14.5-14.5-15.8-7.8-35-1.3-42.9 14.5L369.8 316.2l-253.9 36.9c-7 1-13.4 4.3-18.3 9.3a32.05 32.05 0 0 0 .6 45.3l183.7 179.1-43.4 252.9a31.95 31.95 0 0 0 46.4 33.7L512 754l227.1 119.4c6.2 3.3 13.4 4.4 20.3 3.2 17.4-3 29.1-19.5 26.1-36.9l-43.4-252.9 183.7-179.1c5-4.9 8.3-11.3 9.3-18.3 2.7-17.5-9.5-33.7-27-36.3z"></path>
+                    </svg>
+                    <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      strokeWidth="0"
+                      viewBox="0 0 1024 1024"
+                      color="#f6b100"
+                      className="mr-2 cursor-pointer"
+                      style={{ color: "#f6b100" }}
+                      height="20"
+                      width="20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M908.1 353.1l-253.9-36.9L540.7 86.1c-3.1-6.3-8.2-11.4-14.5-14.5-15.8-7.8-35-1.3-42.9 14.5L369.8 316.2l-253.9 36.9c-7 1-13.4 4.3-18.3 9.3a32.05 32.05 0 0 0 .6 45.3l183.7 179.1-43.4 252.9a31.95 31.95 0 0 0 46.4 33.7L512 754l227.1 119.4c6.2 3.3 13.4 4.4 20.3 3.2 17.4-3 29.1-19.5 26.1-36.9l-43.4-252.9 183.7-179.1c5-4.9 8.3-11.3 9.3-18.3 2.7-17.5-9.5-33.7-27-36.3z"></path>
+                    </svg>
+                    <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      strokeWidth="0"
+                      viewBox="0 0 1024 1024"
+                      color="#f6b100"
+                      className="mr-2 cursor-pointer"
+                      style={{ color: "#f6b100" }}
+                      height="20"
+                      width="20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M908.1 353.1l-253.9-36.9L540.7 86.1c-3.1-6.3-8.2-11.4-14.5-14.5-15.8-7.8-35-1.3-42.9 14.5L369.8 316.2l-253.9 36.9c-7 1-13.4 4.3-18.3 9.3a32.05 32.05 0 0 0 .6 45.3l183.7 179.1-43.4 252.9a31.95 31.95 0 0 0 46.4 33.7L512 754l227.1 119.4c6.2 3.3 13.4 4.4 20.3 3.2 17.4-3 29.1-19.5 26.1-36.9l-43.4-252.9 183.7-179.1c5-4.9 8.3-11.3 9.3-18.3 2.7-17.5-9.5-33.7-27-36.3z"></path>
+                    </svg>
+                  </div>
+                </div>
+                <p className="pt-2 px-2 font-Poppins">
+                  Tham gia ngay CodeWithSamuel! CodeWithSamuel tập trung vào các
+                  ứng dụng thực tiễn thay vì chỉ giảng dạy lý thuyết về các ngôn
+                  ngữ lập trình hay framework. Mình đã học một bài hướng dẫn về
+                  cách tạo một sàn thương mại điện tử bằng React JS, và nó thực
+                  sự hữu ích trong việc giúp mình hiểu các giai đoạn khác nhau
+                  của việc hoàn thành một dự án từ đầu đến cuối. Tổng thể, mình
+                  rất khuyến khích CodeWithSamuel cho bất kỳ ai muốn cải thiện
+                  kỹ năng lập trình và xây dựng các dự án thực tế.
+                  CodeWithSamuel thực sự là một nguồn tài nguyên tuyệt vời để
+                  giúp bạn nâng tầm kỹ năng của mình!
+                </p>
+              </div>
+            </div>
+            {/* REVIEW 4 */}
+            <div className="break-inside-avoid mb-5">
+              <div className="flex-col relative overflow-hidden text-foreground box-border outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 transition-transform-background motion-reduce:transition-none w-full my-5 md:my-0 h-min block bg-[#ffffff3f] bg-slate-500 bg-opacity-[0.20] border border-[#ffffff1d] backdrop-blur shadow-[bg-slate-700] rounded-lg p-3 shadow-inner">
+                <div className="flex w-full">
+                  <div className="flex p-3 z-10 w-full justify-start shrink-0 overflow-inherit color-inherit subpixel-antialiased rounded-t-large items-center">
+                    <div className="w-[55px]">
+                      <span
+                        tabIndex={-1}
+                        className="flex relative justify-center items-center box-border overflow-hidden align-middle z-0 outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 w-14 h-14 text-small bg-default text-default-foreground rounded-full"
+                      >
+                        <img
+                          src="/avatar.png"
+                          className="flex object-cover w-full h-full transition-opacity !duration-500 opacity-0 data-[loaded=true]:opacity-100"
+                          alt=""
+                          data-loaded="true"
+                        />
+                      </span>
+                    </div>
+                    <div className="flex justify-between w-full">
+                      <div className="pl-4">
+                        <h5 className="md:text-[20px] mb-2">Danh Meta</h5>
+                        <h6 className="text-[14px] text-[#ffffffab]">
+                          Full stack web developer
+                        </h6>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="">
+                  <div className="flex mt-1 ml-2 md:mt-0 md:ml-0">
+                    <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      strokeWidth="0"
+                      viewBox="0 0 1024 1024"
+                      color="#f6b100"
+                      className="mr-2 cursor-pointer"
+                      style={{ color: "#f6b100" }}
+                      height="20"
+                      width="20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M908.1 353.1l-253.9-36.9L540.7 86.1c-3.1-6.3-8.2-11.4-14.5-14.5-15.8-7.8-35-1.3-42.9 14.5L369.8 316.2l-253.9 36.9c-7 1-13.4 4.3-18.3 9.3a32.05 32.05 0 0 0 .6 45.3l183.7 179.1-43.4 252.9a31.95 31.95 0 0 0 46.4 33.7L512 754l227.1 119.4c6.2 3.3 13.4 4.4 20.3 3.2 17.4-3 29.1-19.5 26.1-36.9l-43.4-252.9 183.7-179.1c5-4.9 8.3-11.3 9.3-18.3 2.7-17.5-9.5-33.7-27-36.3z"></path>
+                    </svg>
+                    <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      strokeWidth="0"
+                      viewBox="0 0 1024 1024"
+                      color="#f6b100"
+                      className="mr-2 cursor-pointer"
+                      style={{ color: "#f6b100" }}
+                      height="20"
+                      width="20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M908.1 353.1l-253.9-36.9L540.7 86.1c-3.1-6.3-8.2-11.4-14.5-14.5-15.8-7.8-35-1.3-42.9 14.5L369.8 316.2l-253.9 36.9c-7 1-13.4 4.3-18.3 9.3a32.05 32.05 0 0 0 .6 45.3l183.7 179.1-43.4 252.9a31.95 31.95 0 0 0 46.4 33.7L512 754l227.1 119.4c6.2 3.3 13.4 4.4 20.3 3.2 17.4-3 29.1-19.5 26.1-36.9l-43.4-252.9 183.7-179.1c5-4.9 8.3-11.3 9.3-18.3 2.7-17.5-9.5-33.7-27-36.3z"></path>
+                    </svg>
+                    <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      strokeWidth="0"
+                      viewBox="0 0 1024 1024"
+                      color="#f6b100"
+                      className="mr-2 cursor-pointer"
+                      style={{ color: "#f6b100" }}
+                      height="20"
+                      width="20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M908.1 353.1l-253.9-36.9L540.7 86.1c-3.1-6.3-8.2-11.4-14.5-14.5-15.8-7.8-35-1.3-42.9 14.5L369.8 316.2l-253.9 36.9c-7 1-13.4 4.3-18.3 9.3a32.05 32.05 0 0 0 .6 45.3l183.7 179.1-43.4 252.9a31.95 31.95 0 0 0 46.4 33.7L512 754l227.1 119.4c6.2 3.3 13.4 4.4 20.3 3.2 17.4-3 29.1-19.5 26.1-36.9l-43.4-252.9 183.7-179.1c5-4.9 8.3-11.3 9.3-18.3 2.7-17.5-9.5-33.7-27-36.3z"></path>
+                    </svg>
+                    <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      strokeWidth="0"
+                      viewBox="0 0 1024 1024"
+                      color="#f6b100"
+                      className="mr-2 cursor-pointer"
+                      style={{ color: "#f6b100" }}
+                      height="20"
+                      width="20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M908.1 353.1l-253.9-36.9L540.7 86.1c-3.1-6.3-8.2-11.4-14.5-14.5-15.8-7.8-35-1.3-42.9 14.5L369.8 316.2l-253.9 36.9c-7 1-13.4 4.3-18.3 9.3a32.05 32.05 0 0 0 .6 45.3l183.7 179.1-43.4 252.9a31.95 31.95 0 0 0 46.4 33.7L512 754l227.1 119.4c6.2 3.3 13.4 4.4 20.3 3.2 17.4-3 29.1-19.5 26.1-36.9l-43.4-252.9 183.7-179.1c5-4.9 8.3-11.3 9.3-18.3 2.7-17.5-9.5-33.7-27-36.3z"></path>
+                    </svg>
+                    <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      strokeWidth="0"
+                      viewBox="0 0 1024 1024"
+                      color="#f6b100"
+                      className="mr-2 cursor-pointer"
+                      style={{ color: "#f6b100" }}
+                      height="20"
+                      width="20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M908.1 353.1l-253.9-36.9L540.7 86.1c-3.1-6.3-8.2-11.4-14.5-14.5-15.8-7.8-35-1.3-42.9 14.5L369.8 316.2l-253.9 36.9c-7 1-13.4 4.3-18.3 9.3a32.05 32.05 0 0 0 .6 45.3l183.7 179.1-43.4 252.9a31.95 31.95 0 0 0 46.4 33.7L512 754l227.1 119.4c6.2 3.3 13.4 4.4 20.3 3.2 17.4-3 29.1-19.5 26.1-36.9l-43.4-252.9 183.7-179.1c5-4.9 8.3-11.3 9.3-18.3 2.7-17.5-9.5-33.7-27-36.3z"></path>
+                    </svg>
+                  </div>
+                </div>
+                <p className="pt-2 px-2 font-Poppins">
+                  Samuel thực sự là một lập trình viên tốt. Anh ấy có khả năng
+                  tuyệt vời trong việc giải quyết các lỗi trên website, và kỹ
+                  năng xử lý vấn đề của anh ấy thì không chê vào đâu được. Hơn
+                  thế nữa, nội dung trên kênh Tiktok và Youtube của anh ấy luôn
+                  đạt chất lượng hàng đầu. Mình rất khuyến khích mọi người ủng
+                  hộ cộng đồng CodeWithSamuel!
+                </p>
+              </div>
+            </div>
+            {/* REVIEW 5 */}
+            <div className="break-inside-avoid mb-5">
+              <div className="flex-col relative overflow-hidden text-foreground box-border outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 transition-transform-background motion-reduce:transition-none w-full my-5 md:my-0 h-min block bg-[#ffffff3f] bg-slate-500 bg-opacity-[0.20] border border-[#ffffff1d] backdrop-blur shadow-[bg-slate-700] rounded-lg p-3 shadow-inner">
+                <div className="flex w-full">
+                  <div className="flex p-3 z-10 w-full justify-start shrink-0 overflow-inherit color-inherit subpixel-antialiased rounded-t-large items-center">
+                    <div className="w-[55px]">
+                      <span
+                        tabIndex={-1}
+                        className="flex relative justify-center items-center box-border overflow-hidden align-middle z-0 outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 w-14 h-14 text-small bg-default text-default-foreground rounded-full"
+                      >
+                        <img
+                          src="/avatar.png"
+                          className="flex object-cover w-full h-full transition-opacity !duration-500 opacity-0 data-[loaded=true]:opacity-100"
+                          alt=""
+                          data-loaded="true"
+                        />
+                      </span>
+                    </div>
+                    <div className="flex justify-between w-full">
+                      <div className="pl-4">
+                        <h5 className="md:text-[20px] mb-2">Đặng Phùng Danh</h5>
+                        <h6 className="text-[14px] text-[#ffffffab]">
+                          Founder & CEO
+                        </h6>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="">
+                  <div className="flex mt-1 ml-2 md:mt-0 md:ml-0">
+                    <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      strokeWidth="0"
+                      viewBox="0 0 1024 1024"
+                      color="#f6b100"
+                      className="mr-2 cursor-pointer"
+                      style={{ color: "#f6b100" }}
+                      height="20"
+                      width="20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M908.1 353.1l-253.9-36.9L540.7 86.1c-3.1-6.3-8.2-11.4-14.5-14.5-15.8-7.8-35-1.3-42.9 14.5L369.8 316.2l-253.9 36.9c-7 1-13.4 4.3-18.3 9.3a32.05 32.05 0 0 0 .6 45.3l183.7 179.1-43.4 252.9a31.95 31.95 0 0 0 46.4 33.7L512 754l227.1 119.4c6.2 3.3 13.4 4.4 20.3 3.2 17.4-3 29.1-19.5 26.1-36.9l-43.4-252.9 183.7-179.1c5-4.9 8.3-11.3 9.3-18.3 2.7-17.5-9.5-33.7-27-36.3z"></path>
+                    </svg>
+                    <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      strokeWidth="0"
+                      viewBox="0 0 1024 1024"
+                      color="#f6b100"
+                      className="mr-2 cursor-pointer"
+                      style={{ color: "#f6b100" }}
+                      height="20"
+                      width="20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M908.1 353.1l-253.9-36.9L540.7 86.1c-3.1-6.3-8.2-11.4-14.5-14.5-15.8-7.8-35-1.3-42.9 14.5L369.8 316.2l-253.9 36.9c-7 1-13.4 4.3-18.3 9.3a32.05 32.05 0 0 0 .6 45.3l183.7 179.1-43.4 252.9a31.95 31.95 0 0 0 46.4 33.7L512 754l227.1 119.4c6.2 3.3 13.4 4.4 20.3 3.2 17.4-3 29.1-19.5 26.1-36.9l-43.4-252.9 183.7-179.1c5-4.9 8.3-11.3 9.3-18.3 2.7-17.5-9.5-33.7-27-36.3z"></path>
+                    </svg>
+                    <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      strokeWidth="0"
+                      viewBox="0 0 1024 1024"
+                      color="#f6b100"
+                      className="mr-2 cursor-pointer"
+                      style={{ color: "#f6b100" }}
+                      height="20"
+                      width="20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M908.1 353.1l-253.9-36.9L540.7 86.1c-3.1-6.3-8.2-11.4-14.5-14.5-15.8-7.8-35-1.3-42.9 14.5L369.8 316.2l-253.9 36.9c-7 1-13.4 4.3-18.3 9.3a32.05 32.05 0 0 0 .6 45.3l183.7 179.1-43.4 252.9a31.95 31.95 0 0 0 46.4 33.7L512 754l227.1 119.4c6.2 3.3 13.4 4.4 20.3 3.2 17.4-3 29.1-19.5 26.1-36.9l-43.4-252.9 183.7-179.1c5-4.9 8.3-11.3 9.3-18.3 2.7-17.5-9.5-33.7-27-36.3z"></path>
+                    </svg>
+                    <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      strokeWidth="0"
+                      viewBox="0 0 1024 1024"
+                      color="#f6b100"
+                      className="mr-2 cursor-pointer"
+                      style={{ color: "#f6b100" }}
+                      height="20"
+                      width="20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M908.1 353.1l-253.9-36.9L540.7 86.1c-3.1-6.3-8.2-11.4-14.5-14.5-15.8-7.8-35-1.3-42.9 14.5L369.8 316.2l-253.9 36.9c-7 1-13.4 4.3-18.3 9.3a32.05 32.05 0 0 0 .6 45.3l183.7 179.1-43.4 252.9a31.95 31.95 0 0 0 46.4 33.7L512 754l227.1 119.4c6.2 3.3 13.4 4.4 20.3 3.2 17.4-3 29.1-19.5 26.1-36.9l-43.4-252.9 183.7-179.1c5-4.9 8.3-11.3 9.3-18.3 2.7-17.5-9.5-33.7-27-36.3z"></path>
+                    </svg>
+                    <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      strokeWidth="0"
+                      viewBox="0 0 1024 1024"
+                      color="#f6b100"
+                      className="mr-2 cursor-pointer"
+                      style={{ color: "#f6b100" }}
+                      height="20"
+                      width="20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M908.1 353.1l-253.9-36.9L540.7 86.1c-3.1-6.3-8.2-11.4-14.5-14.5-15.8-7.8-35-1.3-42.9 14.5L369.8 316.2l-253.9 36.9c-7 1-13.4 4.3-18.3 9.3a32.05 32.05 0 0 0 .6 45.3l183.7 179.1-43.4 252.9a31.95 31.95 0 0 0 46.4 33.7L512 754l227.1 119.4c6.2 3.3 13.4 4.4 20.3 3.2 17.4-3 29.1-19.5 26.1-36.9l-43.4-252.9 183.7-179.1c5-4.9 8.3-11.3 9.3-18.3 2.7-17.5-9.5-33.7-27-36.3z"></path>
+                    </svg>
+                  </div>
+                </div>
+                <p className="pt-2 px-2 font-Poppins">
+                  Mình rất trân trọng sự tận tâm, chuyên môn và nhiệt huyết của
+                  bạn trong việc giảng dạy lập trình. CodeWithSamuel không chỉ
+                  dừng lại ở việc dạy lý thuyết về ngôn ngữ lập trình và
+                  framework. Trang web còn cung cấp rất nhiều khóa học liên quan
+                  đến công nghệ, nhưng khóa học mà mình chọn thực sự khiến mình
+                  ấn tượng về chi phí và chất lượng. Với danh sách khóa học
+                  phong phú và đội ngũ giảng viên xuất sắc, CodeWithSamuel chính
+                  là nơi lý tưởng để bạn mở rộng kiến thức và kỹ năng trong
+                  ngành công nghệ.
+                </p>
+              </div>
+            </div>
+            {/* REVIEW 6 */}
+            <div className="break-inside-avoid mb-5">
+              <div className="flex-col relative overflow-hidden text-foreground box-border outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 transition-transform-background motion-reduce:transition-none w-full my-5 md:my-0 h-min block bg-[#ffffff3f] bg-slate-500 bg-opacity-[0.20] border border-[#ffffff1d] backdrop-blur shadow-[bg-slate-700] rounded-lg p-3 shadow-inner">
+                <div className="flex w-full">
+                  <div className="flex p-3 z-10 w-full justify-start shrink-0 overflow-inherit color-inherit subpixel-antialiased rounded-t-large items-center">
+                    <div className="w-[55px]">
+                      <span
+                        tabIndex={-1}
+                        className="flex relative justify-center items-center box-border overflow-hidden align-middle z-0 outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 w-14 h-14 text-small bg-default text-default-foreground rounded-full"
+                      >
+                        <img
+                          src="/avatar.png"
+                          className="flex object-cover w-full h-full transition-opacity !duration-500 opacity-0 data-[loaded=true]:opacity-100"
+                          alt=""
+                          data-loaded="true"
+                        />
+                      </span>
+                    </div>
+                    <div className="flex justify-between w-full">
+                      <div className="pl-4">
+                        <h5 className="md:text-[20px] mb-2">Trần Long IT</h5>
+                        <h6 className="text-[14px] text-[#ffffffab]">
+                          Computer systems engineering student
+                        </h6>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="">
+                  <div className="flex mt-1 ml-2 md:mt-0 md:ml-0">
+                    <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      strokeWidth="0"
+                      viewBox="0 0 1024 1024"
+                      color="#f6b100"
+                      className="mr-2 cursor-pointer"
+                      style={{ color: "#f6b100" }}
+                      height="20"
+                      width="20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M908.1 353.1l-253.9-36.9L540.7 86.1c-3.1-6.3-8.2-11.4-14.5-14.5-15.8-7.8-35-1.3-42.9 14.5L369.8 316.2l-253.9 36.9c-7 1-13.4 4.3-18.3 9.3a32.05 32.05 0 0 0 .6 45.3l183.7 179.1-43.4 252.9a31.95 31.95 0 0 0 46.4 33.7L512 754l227.1 119.4c6.2 3.3 13.4 4.4 20.3 3.2 17.4-3 29.1-19.5 26.1-36.9l-43.4-252.9 183.7-179.1c5-4.9 8.3-11.3 9.3-18.3 2.7-17.5-9.5-33.7-27-36.3z"></path>
+                    </svg>
+                    <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      strokeWidth="0"
+                      viewBox="0 0 1024 1024"
+                      color="#f6b100"
+                      className="mr-2 cursor-pointer"
+                      style={{ color: "#f6b100" }}
+                      height="20"
+                      width="20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M908.1 353.1l-253.9-36.9L540.7 86.1c-3.1-6.3-8.2-11.4-14.5-14.5-15.8-7.8-35-1.3-42.9 14.5L369.8 316.2l-253.9 36.9c-7 1-13.4 4.3-18.3 9.3a32.05 32.05 0 0 0 .6 45.3l183.7 179.1-43.4 252.9a31.95 31.95 0 0 0 46.4 33.7L512 754l227.1 119.4c6.2 3.3 13.4 4.4 20.3 3.2 17.4-3 29.1-19.5 26.1-36.9l-43.4-252.9 183.7-179.1c5-4.9 8.3-11.3 9.3-18.3 2.7-17.5-9.5-33.7-27-36.3z"></path>
+                    </svg>
+                    <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      strokeWidth="0"
+                      viewBox="0 0 1024 1024"
+                      color="#f6b100"
+                      className="mr-2 cursor-pointer"
+                      style={{ color: "#f6b100" }}
+                      height="20"
+                      width="20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M908.1 353.1l-253.9-36.9L540.7 86.1c-3.1-6.3-8.2-11.4-14.5-14.5-15.8-7.8-35-1.3-42.9 14.5L369.8 316.2l-253.9 36.9c-7 1-13.4 4.3-18.3 9.3a32.05 32.05 0 0 0 .6 45.3l183.7 179.1-43.4 252.9a31.95 31.95 0 0 0 46.4 33.7L512 754l227.1 119.4c6.2 3.3 13.4 4.4 20.3 3.2 17.4-3 29.1-19.5 26.1-36.9l-43.4-252.9 183.7-179.1c5-4.9 8.3-11.3 9.3-18.3 2.7-17.5-9.5-33.7-27-36.3z"></path>
+                    </svg>
+                    <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      strokeWidth="0"
+                      viewBox="0 0 1024 1024"
+                      color="#f6b100"
+                      className="mr-2 cursor-pointer"
+                      style={{ color: "#f6b100" }}
+                      height="20"
+                      width="20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M908.1 353.1l-253.9-36.9L540.7 86.1c-3.1-6.3-8.2-11.4-14.5-14.5-15.8-7.8-35-1.3-42.9 14.5L369.8 316.2l-253.9 36.9c-7 1-13.4 4.3-18.3 9.3a32.05 32.05 0 0 0 .6 45.3l183.7 179.1-43.4 252.9a31.95 31.95 0 0 0 46.4 33.7L512 754l227.1 119.4c6.2 3.3 13.4 4.4 20.3 3.2 17.4-3 29.1-19.5 26.1-36.9l-43.4-252.9 183.7-179.1c5-4.9 8.3-11.3 9.3-18.3 2.7-17.5-9.5-33.7-27-36.3z"></path>
+                    </svg>
+                    <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      strokeWidth="0"
+                      viewBox="0 0 1024 1024"
+                      color="#f6b100"
+                      className="mr-2 cursor-pointer"
+                      style={{ color: "#f6b100" }}
+                      height="20"
+                      width="20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M908.1 353.1l-253.9-36.9L540.7 86.1c-3.1-6.3-8.2-11.4-14.5-14.5-15.8-7.8-35-1.3-42.9 14.5L369.8 316.2l-253.9 36.9c-7 1-13.4 4.3-18.3 9.3a32.05 32.05 0 0 0 .6 45.3l183.7 179.1-43.4 252.9a31.95 31.95 0 0 0 46.4 33.7L512 754l227.1 119.4c6.2 3.3 13.4 4.4 20.3 3.2 17.4-3 29.1-19.5 26.1-36.9l-43.4-252.9 183.7-179.1c5-4.9 8.3-11.3 9.3-18.3 2.7-17.5-9.5-33.7-27-36.3z"></path>
+                    </svg>
+                  </div>
+                </div>
+                <p className="pt-2 px-2 font-Poppins">
+                  CodeWithSamuel làm rất tốt trong việc giải thích các khái niệm
+                  một cách rõ ràng và súc tích, cùng với những ví dụ được chọn
+                  lọc kỹ lưỡng. Nhìn chung, đây là một nguồn tài liệu quý giá
+                  cho bất kỳ ai mới bắt đầu học lập trình.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </motion.div>
     </motion.div>
