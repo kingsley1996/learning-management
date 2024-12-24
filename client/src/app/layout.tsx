@@ -29,7 +29,7 @@ export default function RootLayout({
         <body className={`${dmSans.className}`}>
           <Providers>
             <Suspense fallback={null}>
-              <div className="root-layout">{children}</div>
+              <div className="root-layout overflow-x-hidden">{children}</div>
             </Suspense>
             <Toaster richColors closeButton />
           </Providers>
