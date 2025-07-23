@@ -8,6 +8,32 @@
   box-sizing: border-box;
 }
 
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes scroll-right {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.animate-scroll-left {
+  animation: scroll-left 20s linear infinite;
+}
+
+.animate-scroll-right {
+  animation: scroll-right 20s linear infinite;
+}
+
 html,
 body,
 #root,
@@ -1803,4 +1829,77 @@ input[type="color"] {
   100% {
     transform: translateX(-100%);
   }
+}
+
+/* One-on-one landing page styles */
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Tech stack card animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tech-stack-card {
+  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+/* Accordion styling */
+.accordion-section {
+  @apply border border-gray-100 rounded-lg overflow-hidden transition-shadow duration-200;
+}
+
+.accordion-section:hover {
+  @apply shadow-md;
+}
+
+.accordion-section__title {
+  @apply text-lg font-semibold;
+}
+
+.accordion-section__trigger {
+  @apply px-6 py-4 w-full text-left hover:bg-gray-50/50 transition-colors duration-200;
+}
+
+.accordion-section__trigger:focus-visible {
+  @apply outline-none ring-2 ring-blue-500 ring-offset-2;
+}
+
+.accordion-section__trigger[data-state='open'] {
+  @apply bg-gray-50/50;
+}
+
+/* Button hover animations */
+.btn-hover-scale {
+  @apply transition-transform duration-200 ease-in-out hover:scale-105;
+}
+
+/* Section transitions */
+.section-fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.section-fade-in-delay-1 {
+  animation-delay: 0.2s;
+}
+
+.section-fade-in-delay-2 {
+  animation-delay: 0.4s;
+}
+
+.section-fade-in-delay-3 {
+  animation-delay: 0.6s;
 }

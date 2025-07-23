@@ -1,42 +1,65 @@
 "use client";
 
-import React from "react";
-import { motion } from "framer-motion";
+import React, { Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useCarousel } from "@/hooks/useCarousel";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useGetCoursesQuery } from "@/state/api";
 import { useRouter } from "next/navigation";
-import CourseCardSearch from "@/components/CourseCardSearch";
 import { useUser } from "@clerk/nextjs";
+import dynamic from "next/dynamic";
+import { motion } from "framer-motion";
 
-const LoadingSkeleton = () => {
+// Dynamic imports for performance optimization
+const CountdownTimer = dynamic(() => import("@/components/CountdownTimer"), {
+  loading: () => <div className="h-8 bg-gray-800 rounded animate-pulse" />
+});
+
+const SparkleEffect = dynamic(() => import("@/components/SparkleEffect"), {
+  ssr: false
+});
+
+const CourseCardSearch = dynamic(() => import("@/components/CourseCardSearch"), {
+  loading: () => <div className="h-[300px] bg-gray-800 rounded-lg animate-pulse" />,
+  ssr: false,
+});
+
+// Loading UI components
+const SkeletonCard = () => (
+  <div className="h-[400px] bg-[#ffffff3f] bg-opacity-20 rounded-lg animate-pulse border border-[#ffffff1d] backdrop-blur p-4">
+    <div className="h-52 bg-gray-700/50 rounded-lg mb-4" />
+    <div className="space-y-4">
+      <div className="h-6 bg-gray-700/50 rounded-lg w-3/4" />
+      <div className="h-4 bg-gray-700/50 rounded-lg w-1/2" />
+      <div className="flex gap-2 mt-4">
+        <div className="h-8 w-8 bg-gray-700/50 rounded-full" />
+        <div className="h-8 w-8 bg-gray-700/50 rounded-full" />
+        <div className="h-8 w-8 bg-gray-700/50 rounded-full" />
+      </div>
+    </div>
+  </div>
+);
+
+const LoadingUI = () => {
   return (
-    <div className="landing-skeleton">
-      <div className="landing-skeleton__hero">
-        <div className="landing-skeleton__hero-content">
-          <Skeleton className="landing-skeleton__title" />
-          <Skeleton className="landing-skeleton__subtitle" />
-          <Skeleton className="landing-skeleton__subtitle-secondary" />
-          <Skeleton className="landing-skeleton__button" />
+    <div className="w-full min-h-screen">
+      {/* Hero section skeleton */}
+      <div className="relative pt-20 pb-16 md:pt-28 md:pb-24">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col items-center space-y-8 text-center">
+            <div className="w-3/4 h-12 bg-[#ffffff3f] bg-opacity-20 rounded-lg animate-pulse" />
+            <div className="w-2/3 h-8 bg-[#ffffff3f] bg-opacity-20 rounded-lg animate-pulse" />
+            <div className="w-1/2 h-16 bg-[#ffffff3f] bg-opacity-20 rounded-lg animate-pulse mt-8" />
+          </div>
         </div>
-        <Skeleton className="landing-skeleton__hero-image" />
       </div>
 
-      <div className="landing-skeleton__featured">
-        <Skeleton className="landing-skeleton__featured-title" />
-        <Skeleton className="landing-skeleton__featured-description" />
-
-        <div className="landing-skeleton__tags">
-          {[1, 2, 3, 4, 5].map((_, index) => (
-            <Skeleton key={index} className="landing-skeleton__tag" />
-          ))}
-        </div>
-
-        <div className="landing-skeleton__courses">
-          {[1, 2, 3, 4].map((_, index) => (
-            <Skeleton key={index} className="landing-skeleton__course-card" />
+      {/* Featured courses skeleton */}
+      <div className="container mx-auto px-4 py-16">
+        <div className="w-1/3 h-10 bg-[#ffffff3f] bg-opacity-20 rounded-lg animate-pulse mb-12 mx-auto" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {[...Array(6)].map((_, i) => (
+            <SkeletonCard key={i} />
           ))}
         </div>
       </div>
@@ -55,7 +78,7 @@ const Landing = () => {
     });
   };
 
-  if (isLoading) return <LoadingSkeleton />;
+  if (isLoading) return <LoadingUI />;
 
   return (
     <motion.div
@@ -108,7 +131,7 @@ const Landing = () => {
                 </p>
                 <div className="flex flex-col mb-8 lg:mb-8 space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
                   <Link
-                    href="/search"
+                    href="/hoc-lap-trinh-1-1"
                     className="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-900"
                     scroll={false}
                   >
@@ -188,18 +211,14 @@ const Landing = () => {
       {/* SECTION PREVIEW */}
       <div className="relative z-1">
         <div className="w-full flex flex-col items-center mt-16 mb-10 relative">
-          <img
-            alt="hand"
-            loading="lazy"
-            width="300"
-            height="300"
-            decoding="async"
-            data-nimg="1"
-            className="absolute 2xl:w-[400px] md:hidden xl:block xl:w-[290px] xl:h-[290px] 2xl:h-[400px] left-0 top-[50%] md:top-[31%] 2xl:top-[34%] z-10 w-[100px] h-[100px] sm:w-[150px] sm:h-[150px] md:w-[300px] md:h-[300px]"
-            srcSet="/creative-hand.webp 1x, /creative-hand.webp 2x"
+          <Image
             src="/creative-hand.webp"
-            style={{ color: "transparent" }}
-          ></img>
+            alt="hand"
+            width={400}
+            height={400}
+            className="absolute 2xl:w-[400px] md:hidden xl:block xl:w-[290px] xl:h-[290px] 2xl:h-[400px] left-0 top-[50%] md:top-[31%] 2xl:top-[34%] z-10 w-[100px] h-[100px] sm:w-[150px] sm:h-[150px] md:w-[300px] md:h-[300px]"
+            priority
+          />
           <div className="absolute md:top-16 2xl:top-24 top-0 md:w-[80%] 2xl:w-[60%] m-auto z-20 w-[95%]">
             <h1 className="text-[25px] font-[500] font-Poppins text-center py-2 !font-DM_Sans leading-[30px] md:!text-[4xl] md:!leading-[50px] xl:!text-5xl xl:!leading-[60px]">
               CodeWithSamuel đồng hành cùng bạn trong quá trình học lập trình.
@@ -227,9 +246,9 @@ const Landing = () => {
                   </g>
                 </svg>
               </div>
-              <span className="text-[16px] font-Poppins pt-2 md:pl-3 cursor-pointer md:!text-[18px]">
-                Coming Soon...
-              </span>
+              <Link href="/hoc-lap-trinh-1-1" className="text-[24px] font-bold text-purple-600 font-Poppins pt-2 md:pl-3 cursor-pointer md:!text-[18px]">
+                Lộ trình học lập trình 1-1
+              </Link>
             </div>
           </div>
           <div className="hidden md:grid gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 md:absolute bottom-28">
@@ -349,41 +368,30 @@ const Landing = () => {
             <div className="rfm-marquee">
               <div className="rfm-initial-child-container">
                 <div className="rfm-child">
-                  <img
-                    alt="partner"
-                    loading="lazy"
-                    width="220"
-                    height="220"
-                    decoding="async"
-                    data-nimg="1"
-                    className="md:mx-8 w-[150px] md:w-[220px]  mx-3"
+                  <Image
                     src="/brand/clerk-logo.svg"
-                    style={{ color: "transparent" }}
+                    alt="Clerk Logo"
+                    width={220}
+                    height={220}
+                    className="md:mx-8 w-[150px] md:w-[220px] mx-3"
                   />
                 </div>
                 <div className="rfm-child">
-                  <img
-                    alt="partner"
-                    loading="lazy"
-                    width="220"
-                    height="220"
-                    decoding="async"
-                    data-nimg="1"
-                    className="md:mx-8 w-[150px] md:w-[220px]  mx-3"
+                  <Image
                     src="/brand/upstash-logo.svg"
-                    style={{ color: "transparent" }}
+                    alt="Upstash Logo"
+                    width={220}
+                    height={220}
+                    className="md:mx-8 w-[150px] md:w-[220px] mx-3"
                   />
                 </div>
                 <div className="rfm-child">
-                  <img
-                    alt="partner"
-                    loading="lazy"
-                    width="220"
-                    height="220"
-                    decoding="async"
-                    data-nimg="1"
-                    className="md:mx-8 w-[150px] md:w-[220px]  mx-3"
+                  <Image
                     src="/brand/one-entry.svg"
+                    alt="One Entry Logo"
+                    width={220}
+                    height={220}
+                    className="md:mx-8 w-[150px] md:w-[220px] mx-3"
                     style={{ color: "transparent" }}
                   />
                 </div>
@@ -392,42 +400,30 @@ const Landing = () => {
             <div className="rfm-marquee">
               <div className="rfm-initial-child-container">
                 <div className="rfm-child">
-                  <img
-                    alt="partner"
-                    loading="lazy"
-                    width="220"
-                    height="220"
-                    decoding="async"
-                    data-nimg="1"
-                    className="md:mx-8 w-[150px] md:w-[220px]  mx-3"
+                  <Image
                     src="/brand/clerk-logo.svg"
-                    style={{ color: "transparent" }}
+                    alt="Clerk Logo"
+                    width={220}
+                    height={220}
+                    className="md:mx-8 w-[150px] md:w-[220px] mx-3"
                   />
                 </div>
                 <div className="rfm-child">
-                  <img
-                    alt="partner"
-                    loading="lazy"
-                    width="220"
-                    height="220"
-                    decoding="async"
-                    data-nimg="1"
-                    className="md:mx-8 w-[150px] md:w-[220px]  mx-3"
+                  <Image
                     src="/brand/upstash-logo.svg"
-                    style={{ color: "transparent" }}
+                    alt="Upstash Logo"
+                    width={220}
+                    height={220}
+                    className="md:mx-8 w-[150px] md:w-[220px] mx-3"
                   />
                 </div>
                 <div className="rfm-child">
-                  <img
-                    alt="partner"
-                    loading="lazy"
-                    width="220"
-                    height="220"
-                    decoding="async"
-                    data-nimg="1"
-                    className="md:mx-8 w-[150px] md:w-[220px]  mx-3"
+                  <Image
                     src="/brand/one-entry.svg"
-                    style={{ color: "transparent" }}
+                    alt="One Entry Logo"
+                    width={220}
+                    height={220}
+                    className="md:mx-8 w-[150px] md:w-[220px] mx-3"
                   />
                 </div>
               </div>
@@ -496,11 +492,12 @@ const Landing = () => {
                       tabIndex={-1}
                       className="flex relative justify-center items-center box-border overflow-hidden align-middle z-0 outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 w-14 h-14 text-small bg-default text-default-foreground rounded-full"
                     >
-                      <img
+                      <Image
                         src="/avatar.png"
-                        className="flex object-cover w-full h-full transition-opacity !duration-500 opacity-0 data-[loaded=true]:opacity-100"
-                        alt=""
-                        data-loaded="true"
+                        alt="Nguyễn Quang Hùng Avatar"
+                        width={56}
+                        height={56}
+                        className="flex object-cover w-full h-full"
                       />
                     </span>
                   </div>
@@ -608,11 +605,12 @@ const Landing = () => {
                       tabIndex={-1}
                       className="flex relative justify-center items-center box-border overflow-hidden align-middle z-0 outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 w-14 h-14 text-small bg-default text-default-foreground rounded-full"
                     >
-                      <img
+                      <Image
                         src="/avatar.png"
-                        className="flex object-cover w-full h-full transition-opacity !duration-500 opacity-0 data-[loaded=true]:opacity-100"
-                        alt=""
-                        data-loaded="true"
+                        alt="Trần Minh Avatar"
+                        width={56}
+                        height={56}
+                        className="flex object-cover w-full h-full"
                       />
                     </span>
                   </div>
@@ -720,11 +718,12 @@ const Landing = () => {
                       tabIndex={-1}
                       className="flex relative justify-center items-center box-border overflow-hidden align-middle z-0 outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 w-14 h-14 text-small bg-default text-default-foreground rounded-full"
                     >
-                      <img
+                      <Image
                         src="/avatar.png"
-                        className="flex object-cover w-full h-full transition-opacity !duration-500 opacity-0 data-[loaded=true]:opacity-100"
-                        alt=""
-                        data-loaded="true"
+                        alt="Joseph Le Avatar"
+                        width={56}
+                        height={56}
+                        className="flex object-cover w-full h-full"
                       />
                     </span>
                   </div>
@@ -836,11 +835,12 @@ const Landing = () => {
                       tabIndex={-1}
                       className="flex relative justify-center items-center box-border overflow-hidden align-middle z-0 outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 w-14 h-14 text-small bg-default text-default-foreground rounded-full"
                     >
-                      <img
+                      <Image
                         src="/avatar.png"
-                        className="flex object-cover w-full h-full transition-opacity !duration-500 opacity-0 data-[loaded=true]:opacity-100"
-                        alt=""
-                        data-loaded="true"
+                        alt="Danh Meta Avatar"
+                        width={56}
+                        height={56}
+                        className="flex object-cover w-full h-full"
                       />
                     </span>
                   </div>
@@ -948,11 +948,12 @@ const Landing = () => {
                       tabIndex={-1}
                       className="flex relative justify-center items-center box-border overflow-hidden align-middle z-0 outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 w-14 h-14 text-small bg-default text-default-foreground rounded-full"
                     >
-                      <img
+                      <Image
                         src="/avatar.png"
-                        className="flex object-cover w-full h-full transition-opacity !duration-500 opacity-0 data-[loaded=true]:opacity-100"
-                        alt=""
-                        data-loaded="true"
+                        alt="Đặng Phùng Danh Avatar"
+                        width={56}
+                        height={56}
+                        className="flex object-cover w-full h-full"
                       />
                     </span>
                   </div>
@@ -1062,11 +1063,12 @@ const Landing = () => {
                       tabIndex={-1}
                       className="flex relative justify-center items-center box-border overflow-hidden align-middle z-0 outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 w-14 h-14 text-small bg-default text-default-foreground rounded-full"
                     >
-                      <img
+                      <Image
                         src="/avatar.png"
-                        className="flex object-cover w-full h-full transition-opacity !duration-500 opacity-0 data-[loaded=true]:opacity-100"
-                        alt=""
-                        data-loaded="true"
+                        alt="Trần Long IT Avatar"
+                        width={56}
+                        height={56}
+                        className="flex object-cover w-full h-full"
                       />
                     </span>
                   </div>

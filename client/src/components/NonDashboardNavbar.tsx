@@ -47,11 +47,11 @@ const NonDashboardNavbar = () => {
                 Khoá Học
               </Link>
               <Link
-                href="/"
+                href="/hoc-lap-trinh-1-1"
                 className="px-5 text-[18px] font-Poppins font-[500] false"
                 scroll={false}
               >
-                Tài Nguyên
+                Học Lập Trình 1-1
               </Link>
             </nav>
           </div>
