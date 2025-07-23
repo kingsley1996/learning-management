@@ -15,8 +15,8 @@ const GradientBorder = ({ color }: { color: string }) => {
 
 export default function Page() {
   return (
-    <main className="min-h-screen">
-      <section className="relative flex w-full flex-col items-center justify-center overflow-hidden pt-20 pb-10">
+    <main className="min-h-screen w-full">
+      <section className="relative w-full flex flex-col items-center justify-center overflow-hidden pt-20 pb-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
