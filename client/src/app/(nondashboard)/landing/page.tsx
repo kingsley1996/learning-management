@@ -40,37 +40,40 @@ const SkeletonCard = () => (
   </div>
 );
 
-const LoadingUI = () => {
-  return (
-    <div className="w-full min-h-screen">
-      {/* Hero section skeleton */}
-      <div className="relative pt-20 pb-16 md:pt-28 md:pb-24">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col items-center space-y-8 text-center">
-            <div className="w-3/4 h-12 bg-[#ffffff3f] bg-opacity-20 rounded-lg animate-pulse" />
-            <div className="w-2/3 h-8 bg-[#ffffff3f] bg-opacity-20 rounded-lg animate-pulse" />
-            <div className="w-1/2 h-16 bg-[#ffffff3f] bg-opacity-20 rounded-lg animate-pulse mt-8" />
-          </div>
-        </div>
-      </div>
-
-      {/* Featured courses skeleton */}
-      <div className="container mx-auto px-4 py-16">
-        <div className="w-1/3 h-10 bg-[#ffffff3f] bg-opacity-20 rounded-lg animate-pulse mb-12 mx-auto" />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {[...Array(6)].map((_, i) => (
-            <SkeletonCard key={i} />
-          ))}
+const LoadingUI = () => (
+  <div className="w-full min-h-screen bg-[#020817]">
+    {/* Hero section skeleton */}
+    <div className="relative pt-20 pb-16 md:pt-28 md:pb-24">
+      <div className="container mx-auto px-4">
+        <div className="flex flex-col items-center space-y-8 text-center">
+          <div className="w-3/4 h-12 bg-[#ffffff3f] bg-opacity-20 rounded-lg animate-pulse" />
+          <div className="w-2/3 h-8 bg-[#ffffff3f] bg-opacity-20 rounded-lg animate-pulse" />
+          <div className="w-1/2 h-16 bg-[#ffffff3f] bg-opacity-20 rounded-lg animate-pulse mt-8" />
+          <div className="w-full md:w-3/4 h-[300px] bg-[#ffffff3f] bg-opacity-20 rounded-lg animate-pulse mt-8" />
         </div>
       </div>
     </div>
-  );
-};
+
+    {/* Featured courses skeleton */}
+    <div className="container mx-auto px-4 py-16">
+      <div className="w-1/3 h-10 bg-[#ffffff3f] bg-opacity-20 rounded-lg animate-pulse mb-12 mx-auto" />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {[...Array(6)].map((_, i) => (
+          <SkeletonCard key={i} />
+        ))}
+      </div>
+    </div>
+  </div>
+);
 
 const Landing = () => {
   const router = useRouter();
   const currentImage = useCarousel({ totalImages: 3 });
-  const { data: courses, isLoading, isError } = useGetCoursesQuery({});
+  const { data: courses = [], isLoading, isError } = useGetCoursesQuery({});
+
+  if (isLoading) {
+    return <LoadingUI />;
+  }
 
   const handleCourseClick = (courseId: string) => {
     router.push(`/search?id=${courseId}`, {
