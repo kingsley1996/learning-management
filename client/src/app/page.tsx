@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { NonDashboardNavbarStatic } from "@/components/NonDashboardNavbarStatic";
+import NonDashboardNavbar from "@/components/NonDashboardNavbar";
 import Landing from "@/app/(nondashboard)/landing/page";
 import Footer from "@/components/Footer";
 import LandingPageLoading from './loading';
@@ -7,7 +7,7 @@ import LandingPageLoading from './loading';
 export default function Home() {
   return (
     <div className="nondashboard-layout">
-      <NonDashboardNavbarStatic />
+      <NonDashboardNavbar />
       <main className="nondashboard-layout__main">
         <Suspense fallback={<LandingPageLoading />}>
           <Landing />
