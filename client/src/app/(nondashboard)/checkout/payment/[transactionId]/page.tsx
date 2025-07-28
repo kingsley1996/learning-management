@@ -1,5 +1,7 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
-import { useCurrentCourse } from "@/hooks/useCurrentCourse";
+import { useParams } from "next/navigation";
 import { useUser, useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -9,95 +11,68 @@ import { useCheckoutNavigation } from "@/hooks/useCheckoutNavigation";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL + "/transactions";
 
-const PaymentPage = () => {
-  const { course, courseId } = useCurrentCourse();
+const TransactionPaymentPage = () => {
+  const { transactionId } = useParams();
   const { user } = useUser();
   const { getToken } = useAuth();
   const router = useRouter();
-  const [order, setOrder] = useState<any>(null);
+  const [transaction, setTransaction] = useState<any>(null);
+  const [course, setCourse] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const { navigateToStep } = useCheckoutNavigation();
 
+  // Tải thông tin transaction
   useEffect(() => {
-    const fetchOrCreateOrder = async () => {
-      // Kiểm tra đầy đủ các điều kiện cần thiết
-      if (!user?.id || !courseId || !course) {
-        console.log("Chưa đủ thông tin để tạo đơn hàng:", {
-          userId: user?.id,
-          courseId,
-          course
-        });
-        return;
-      }
+    const fetchTransactionDetails = async () => {
+      if (!user?.id || !transactionId) return;
       
-      setLoading(true);
-      const token = await getToken();
-      // 1. Kiểm tra order pending
-
-      console.log('course: ', course);
-      console.log('user: ', user);
-      console.log('courseId: ', courseId);
-
-      const resPending = await fetch(
-        `${API_BASE}/pending?userId=${user.id}&courseId=${courseId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      const pendingData = await resPending.json();
-      if (pendingData.data) {
-        setOrder(pendingData.data);
-        setLoading(false);
-        return;
-      }
-      // 2. Nếu không có, tạo order mới
       try {
-        const res = await fetch(`${API_BASE}/vietqr/order`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            userId: user.id,
-            courseId,
-            amount: course?.price || 0,
-          }),
+        setLoading(true);
+        const token = await getToken();
+        const res = await fetch(`${API_BASE}/${transactionId}`, {
+          headers: { Authorization: `Bearer ${token}` },
         });
+        
         const data = await res.json();
+        
         if (data.data) {
-          setOrder(data.data);
+          setTransaction(data.data);
+          setCourse(data.data.course);
         } else {
-          toast.error(data.message || "Tạo order thất bại");
+          toast.error(data.message || "Không tìm thấy thông tin giao dịch");
+          router.push("/");
         }
       } catch (err) {
-        toast.error("Lỗi khi tạo order");
+        toast.error("Lỗi khi tải thông tin giao dịch");
       } finally {
         setLoading(false);
       }
     };
-    // Chỉ gọi fetchOrCreateOrder khi đã có đủ thông tin
-    if (user?.id && courseId && course) {
-      fetchOrCreateOrder();
+    
+    if (user?.id) {
+      fetchTransactionDetails();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.id, courseId, course]);
+  }, [user?.id, transactionId, getToken, router]);
 
-  // Polling trạng thái order
+  // Polling trạng thái transaction
   useEffect(() => {
-    if (!order?.orderCode) return;
+    if (!transaction?.orderCode) return;
+    
     let stopped = false;
     const poll = async () => {
       const token = await getToken();
       try {
-        const res = await fetch(`${API_BASE}/order/${order.orderCode}/status`, {
+        const res = await fetch(`${API_BASE}/order/${transaction.orderCode}/status`, {
           headers: { Authorization: `Bearer ${token}` },
         });
+        
         const data = await res.json();
+        
         if (data.status === "success") {
           toast.success("Thanh toán thành công!");
           stopped = true;
-          // Chuyển user sang trang completion đã có sẵn
+          
+          // Chuyển user sang trang completion
           setTimeout(() => {
             navigateToStep(3);
           }, 1500);
@@ -112,11 +87,13 @@ const PaymentPage = () => {
       }
       if (!stopped) setTimeout(poll, 3000);
     };
+    
     poll();
+    
     return () => {
       stopped = true;
     };
-  }, [order?.orderCode, getToken, navigateToStep]);
+  }, [transaction?.orderCode, transaction?.courseId, getToken, router, navigateToStep]);
 
   if (!course || !user?.id) return null;
 
@@ -136,25 +113,25 @@ const PaymentPage = () => {
               <div className="payment__loading">
                 <p className="mt-3">Đang tạo mã QR...</p>
               </div>
-            ) : order ? (
+            ) : transaction?.imageQR ? (
               <div style={{ textAlign: "center" }}>
                 <Image
-                  src={order.imageQR}
+                  src={transaction.imageQR}
                   alt="QR code"
                   width={300}
                   height={300}
                   style={{ margin: "0 auto" }}
                 />
                 <p>
-                  Mã đơn hàng: <b>{order.orderCode}</b>
+                  Mã đơn hàng: <b>{transaction.orderCode}</b>
                 </p>
                 <p>
-                  Số tiền: <b>{course?.price?.toLocaleString()} VND</b>
+                  Số tiền: <b>{transaction.amount?.toLocaleString()} VND</b>
                 </p>
                 <p>Đang chờ xác nhận thanh toán...</p>
               </div>
             ) : (
-              <p>Không thể tạo đơn hàng. Vui lòng thử lại sau.</p>
+              <p>Không thể tạo mã QR. Vui lòng thử lại sau.</p>
             )}
           </div>
         </div>
@@ -163,4 +140,5 @@ const PaymentPage = () => {
   );
 };
 
-export default PaymentPage;
+// Đổi tên component để tránh nhầm lẫn
+export default TransactionPaymentPage;

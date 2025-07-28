@@ -1,13 +1,14 @@
 "use client";
 
 import Loading from "@/components/Loading";
-import { useEnrollFreeCourseMutation, useGetCoursesQuery } from "@/state/api";
+import { useEnrollFreeCourseMutation, useGetCoursesQuery, useInitializeTransactionMutation } from "@/state/api";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import CourseCardSearch from "@/components/CourseCardSearch";
 import SelectedCourse from "./SelectedCourse";
 import { useUser } from "@clerk/nextjs";
+import { toast } from "sonner";
 
 const Search = () => {
   const searchParams = useSearchParams();
@@ -17,6 +18,7 @@ const Search = () => {
   const router = useRouter();
   const { user } = useUser();
   const [enrollFreeCourse] = useEnrollFreeCourseMutation();
+  const [initializeTransaction, { isLoading: isInitializing }] = useInitializeTransactionMutation();
 
   useEffect(() => {
     if (courses) {
@@ -73,9 +75,36 @@ const Search = () => {
         console.log("Error Enroll Course:", err);
       }
     } else {
-      router.push(`/checkout?step=1&id=${course.courseId}&showSignUp=false`, {
-        scroll: false,
-      });
+      try {
+        // Nếu user chưa đăng nhập, chuyển họ đến trang đăng nhập
+        if (!user?.id) {
+          router.push("/signin");
+          return;
+        }
+        
+        // Khởi tạo transaction trước khi chuyển tới trang thanh toán
+        const response = await initializeTransaction({
+          userId: user.id,
+          courseId: course.courseId,
+        }).unwrap();
+
+        // Chuyển hướng đến trang thanh toán với transactionId
+        if (!response || !response.transactionId) {
+          throw new Error('Không nhận được transaction ID');
+        }
+        
+        router.push(`/checkout/payment/${response.transactionId}`, {
+          scroll: false,
+        });
+      } catch (error) {
+        console.error('Error initializing transaction:', error);
+        toast.error('Không thể khởi tạo giao dịch. Vui lòng thử lại sau.');
+        
+        // Fallback đến quy trình checkout cũ nếu có lỗi
+        router.push(`/checkout?step=1&id=${course.courseId}&showSignUp=false`, {
+          scroll: false,
+        });
+      }
     }
   };
 

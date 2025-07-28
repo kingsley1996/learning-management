@@ -186,6 +186,16 @@ export const api = createApi({
         body: transaction,
       }),
     }),
+    initializeTransaction: build.mutation<
+      { transactionId: string; courseId: string; amount: number; orderCode: string; status: string },
+      { userId: string; courseId: string }
+    >({
+      query: (data) => ({
+        url: "transactions/initialize",
+        method: "POST",
+        body: data,
+      }),
+    }),
     enrollFreeCourse: build.mutation<
       EnrollFreeCourse,
       Partial<EnrollFreeCourse>
@@ -270,6 +280,7 @@ export const {
   useGetTransactionsQuery,
   useCreateTransactionMutation,
   useCreateStripePaymentIntentMutation,
+  useInitializeTransactionMutation,
   useGetUserEnrolledCoursesQuery,
   useGetUserCourseProgressQuery,
   useUpdateUserCourseProgressMutation,

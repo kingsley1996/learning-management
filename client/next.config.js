@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig}  */
 const nextConfig = {
   images: {
-    domains: ['d26sniwowg0n19.cloudfront.net'],
+    domains: ['d26sniwowg0n19.cloudfront.net', 'img.vietqr.io'],
     remotePatterns: [
       {
         protocol: "https",
@@ -10,6 +10,14 @@ const nextConfig = {
         pathname: "/**",
       },
     ],
+    formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 60,
+  },
+  // Tối ưu hóa cho landing page
+  experimental: {
+    optimizeCss: true,
+    optimizePackageImports: ['framer-motion', '@clerk/nextjs'],
+    scrollRestoration: true,
   },
 };
 

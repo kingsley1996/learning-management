@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Suspense } from "react";
+import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useCarousel } from "@/hooks/useCarousel";
@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
+
 
 // Dynamic imports for performance optimization
 const CountdownTimer = dynamic(() => import("@/components/CountdownTimer"), {

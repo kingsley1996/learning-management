@@ -5,6 +5,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "sonner";
 import { Suspense } from "react";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { WebVitalsReporter } from "./web-vitals";
 
 export const metadata: Metadata = {
   title: "Code With Samuel",
@@ -24,6 +25,7 @@ export default function RootLayout({
             <Suspense fallback={null}>
               <div className="root-layout overflow-x-hidden">{children}</div>
             </Suspense>
+            <WebVitalsReporter />
             <Toaster richColors closeButton />
           </Providers>
         </body>

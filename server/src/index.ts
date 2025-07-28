@@ -17,6 +17,7 @@ import courseRoutes from "./routes/courseRoutes";
 import userClerkRoutes from "./routes/userClerkRoutes";
 import transactionRoutes from "./routes/transactionRoutes";
 import userCourseProgressRoutes from "./routes/userCourseProgressRoutes";
+import webhookRoutes from "./routes/webhookRoutes";
 
 /* CONFIGURATIONS */
 dotenv.config();
@@ -46,7 +47,9 @@ app.get("/", (req, res) => {
 
 app.use("/courses", courseRoutes);
 app.use("/users/clerk", requireAuth(), userClerkRoutes);
+app.use("/webhook", webhookRoutes);
 app.use("/transactions", requireAuth(), transactionRoutes);
+
 app.use("/users/course-progress", requireAuth(), userCourseProgressRoutes);
 
 /* SERVER */

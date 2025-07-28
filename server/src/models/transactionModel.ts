@@ -11,6 +11,10 @@ const transactionSchema = new Schema(
       type: String,
       rangeKey: true,
       required: true,
+      index: {
+        name: "TransactionIdIndex",
+        type: "global",
+      },
     },
     dateTime: {
       type: String,
@@ -29,11 +33,34 @@ const transactionSchema = new Schema(
       enum: ["stripe", "vietqr"],
       required: true,
     },
-    amount: Number,
+    amount: { type: Number, required: true },
     currency: {
       type: String,
       enum: ["vnd"],
-      default: "vnd"
+      default: "vnd",
+      required: true,
+    },
+    status: {
+      type: String,
+      enum: ["initialized", "pending", "success", "failed", "expired"],
+      default: "initialized",
+      required: true,
+    },
+    imageQR: {
+      type: String,
+      required: false,
+    },
+    orderCode: {
+      type: String,
+      required: true,
+      index: {
+        name: "OrderCodeIndex",
+        type: "global",
+      },
+    },
+    extraInfo: {
+      type: Object,
+      required: false,
     },
   },
   {
