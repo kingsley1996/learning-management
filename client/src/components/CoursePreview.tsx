@@ -34,13 +34,13 @@ const CoursePreview = ({ course }: CoursePreviewProps) => {
       </div>
 
       <div className="course-preview__container">
-        <h3 className="text-xl mb-4">Price Details (1 item)</h3>
+        <h3 className="text-xl mb-4">Chi tiết giá (1 sản phẩm)</h3>
         <div className="flex justify-between mb-4 text-customgreys-dirtyGrey text-base">
           <span className="font-bold">1x {course.title}</span>
           <span className="font-bold">{price}</span>
         </div>
         <div className="flex justify-between border-t border-customgreys-dirtyGrey pt-4">
-          <span className="font-bold text-lg">Total Amount</span>
+          <span className="font-bold text-lg">Tổng tiền</span>
           <span className="font-bold text-lg">{price}</span>
         </div>
       </div>

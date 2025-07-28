@@ -81,18 +81,18 @@ const PaymentPageContent = () => {
             className="payment__form"
           >
             <div className="payment__content">
-              <h1 className="payment__title">Checkout</h1>
+              <h1 className="payment__title">Thanh toán</h1>
               <p className="payment__subtitle">
-                Fill out the payment details below to complete your purchase.
+                Điền thông tin thanh toán bên dưới để hoàn tất giao dịch.
               </p>
 
               <div className="payment__method">
-                <h3 className="payment__method-title">Payment Method</h3>
+                <h3 className="payment__method-title">Phương thức thanh toán</h3>
 
                 <div className="payment__card-container">
                   <div className="payment__card-header">
                     <CreditCard size={24} />
-                    <span>Credit/Debit Card</span>
+                    <span>Thẻ tín dụng/Thẻ ghi nợ</span>
                   </div>
                   <div className="payment__card-element">
                     <PaymentElement />
@@ -112,7 +112,7 @@ const PaymentPageContent = () => {
           variant="outline"
           type="button"
         >
-          Switch Account
+          Đổi tài khoản
         </Button>
 
         <Button
@@ -121,7 +121,7 @@ const PaymentPageContent = () => {
           className="payment__submit"
           disabled={!stripe || !elements}
         >
-          Pay with Credit Card
+          Thanh toán bằng thẻ
         </Button>
       </div>
     </div>

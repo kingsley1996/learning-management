@@ -42,22 +42,22 @@ const UserBilling = () => {
   return (
     <div className="billing">
       <div className="billing__container">
-        <h2 className="billing__title">Payment History</h2>
+        <h2 className="billing__title">Lịch sử thanh toán</h2>
         <div className="billing__filters">
           <Select value={paymentType} onValueChange={setPaymentType}>
             <SelectTrigger className="billing__select">
-              <SelectValue placeholder="Payment Type" />
+              <SelectValue placeholder="Phương thức thanh toán" />
             </SelectTrigger>
 
             <SelectContent className="billing__select-content">
               <SelectItem className="billing__select-item" value="all">
-                All Types
+                Tất cả
               </SelectItem>
               <SelectItem className="billing__select-item" value="stripe">
-                Stripe
+                Thẻ tín dụng
               </SelectItem>
-              <SelectItem className="billing__select-item" value="paypal">
-                Paypal
+              <SelectItem className="billing__select-item" value="vietqr">
+                VietQR
               </SelectItem>
             </SelectContent>
           </Select>
@@ -70,10 +70,10 @@ const UserBilling = () => {
             <Table className="billing__table">
               <TableHeader className="billing__table-header">
                 <TableRow className="billing__table-header-row">
-                  <TableHead className="billing__table-cell">Date</TableHead>
-                  <TableHead className="billing__table-cell">Amount</TableHead>
+                  <TableHead className="billing__table-cell">Ngày</TableHead>
+                  <TableHead className="billing__table-cell">Số tiền</TableHead>
                   <TableHead className="billing__table-cell">
-                    Payment Method
+                    Phương thức
                   </TableHead>
                 </TableRow>
               </TableHeader>

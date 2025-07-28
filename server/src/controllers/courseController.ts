@@ -109,7 +109,8 @@ export const updateCourse = async (
         });
         return;
       }
-      updateData.price = price * 100;
+      // Lưu trực tiếp giá VND, không nhân với 100
+      updateData.price = price;
     }
 
     if (updateData.sections) {

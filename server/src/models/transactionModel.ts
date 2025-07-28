@@ -26,10 +26,15 @@ const transactionSchema = new Schema(
     },
     paymentProvider: {
       type: String,
-      enum: ["stripe"],
+      enum: ["stripe", "vietqr"],
       required: true,
     },
     amount: Number,
+    currency: {
+      type: String,
+      enum: ["vnd"],
+      default: "vnd"
+    },
   },
   {
     saveUnknown: true,

@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/form";
 import { courseSchema } from "@/lib/schemas";
 import {
-  centsToDollars,
   createCourseFormData,
   uploadAllVideos,
   uploadImage,
@@ -70,7 +69,7 @@ const CourseEditor = () => {
         courseTitle: course.title,
         courseDescription: course.description,
         courseCategory: course.category,
-        coursePrice: centsToDollars(course.price),
+        coursePrice: course.price?.toString() || "0",
         courseStatus: course.status === "Published",
       });
       dispatch(setSections(course.sections || []));

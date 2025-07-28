@@ -8,30 +8,36 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// Convert cents to formatted currency string (e.g., 4999 -> "$49.99")
-export function formatPrice(cents: number | undefined): string {
-  return new Intl.NumberFormat("en-US", {
+// Định dạng giá tiền từ số VND sang định dạng chuẩn VND "₫X.XXX.XXX"
+export function formatPrice(vnd: number | undefined): string {
+  return new Intl.NumberFormat("vi-VN", {
     style: "currency",
-    currency: "USD",
-  }).format((cents || 0) / 100);
+    currency: "VND",
+    minimumFractionDigits: 0, // Không hiển thị số thập phân với VND
+    maximumFractionDigits: 0
+  }).format(vnd || 0);
 }
 
-// Convert dollars to cents (e.g., "49.99" -> 4999)
-export function dollarsToCents(dollars: string | number): number {
-  const amount = typeof dollars === "string" ? parseFloat(dollars) : dollars;
-  return Math.round(amount * 100);
+// Chuyển đổi từ chuỗi VND (có thể chứa dấu phẩy, dấu chấm phân cách) thành số
+export function parseVndString(vnd: string | number): number {
+  if (typeof vnd === 'number') return vnd;
+  
+  // Loại bỏ dấu chấm, thay dấu phẩy thành dấu chấm và chuyển thành số
+  return parseFloat(vnd.replace(/\./g, '').replace(',', '.'));
 }
 
-// Convert cents to dollars (e.g., 4999 -> "49.99")
-export function centsToDollars(cents: number | undefined): string {
-  return ((cents || 0) / 100).toString();
+// Hàm hỗ trợ để giữ lại tương thích với code hiện tại
+export function centsToVnd(value: number | undefined): string {
+  // Đơn giản trả về giá trị nguyên - không còn cần chuyển đổi
+  return (value || 0).toString();
 }
 
-// Zod schema for price input (converts dollar input to cents)
+// Zod schema for price input (just parses VND as number)
 export const priceSchema = z.string().transform((val) => {
-  const dollars = parseFloat(val);
-  if (isNaN(dollars)) return "0";
-  return dollarsToCents(dollars).toString();
+  // Chuyển đổi chuỗi giá tiền thành số
+  const vndAmount = parseVndString(val);
+  if (isNaN(vndAmount)) return "0";
+  return vndAmount.toString();
 });
 
 export const countries = [
