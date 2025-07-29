@@ -17,6 +17,36 @@
   }
 }
 
+@keyframes border-flow {
+  0% {
+    background-position: 0% 0;
+  }
+  100% {
+    background-position: 300% 0;
+  }
+}
+
+.animate-border-flow {
+  background-size: 300% 100%;
+  animation: border-flow 3s linear infinite;
+}
+
+/* Hiệu ứng sóng chạy qua các card */
+@keyframes wave-through {
+  0% { opacity: 0.4; }
+  5% { opacity: 0.8; }
+  20% { opacity: 0.8; }
+  25% { opacity: 0.4; }
+  100% { opacity: 0.4; }
+}
+
+.card-1 { animation: wave-through 12s infinite 0s; }
+.card-2 { animation: wave-through 12s infinite 2s; }
+.card-3 { animation: wave-through 12s infinite 4s; }
+.card-4 { animation: wave-through 12s infinite 6s; }
+.card-5 { animation: wave-through 12s infinite 8s; }
+.card-6 { animation: wave-through 12s infinite 10s; }
+
 @keyframes scroll-right {
   0% {
     transform: translateX(-50%);

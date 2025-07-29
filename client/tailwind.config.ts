@@ -133,7 +133,9 @@ const config = {
         "accordion-up": "accordion-up 0.2s ease-out",
       },
       fontFamily: {
-        sans: ["var(--font-dm-sans)"],
+        sans: ["var(--font-roboto)", "system-ui", "sans-serif"],
+        dm: ["var(--font-dm-sans)"], // Giữ lại font cũ để tương thích ngược
+        vietnam: ["var(--font-be-vietnam-pro)"], // Giữ lại font Be Vietnam Pro nếu cần
       },
       fontSize: {
         xs: ["0.75rem", { lineHeight: "1rem" }],
