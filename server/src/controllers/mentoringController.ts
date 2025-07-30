@@ -52,7 +52,7 @@ export const registerMentoring = async (
     
     // Lưu transaction
     const transaction = new Transaction({
-      userId: userId || null, // Nếu người dùng không đăng nhập, userId sẽ là null
+      userId: userId || "anonymous-" + uuidv4().slice(0, 8), // Tạo anonymous ID nếu không có userId
       transactionId: uuidv4(),
       dateTime: new Date().toISOString(),
       courseId,

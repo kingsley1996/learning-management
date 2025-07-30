@@ -5,7 +5,8 @@ const transactionSchema = new Schema(
     userId: {
       type: String,
       hashKey: true,
-      required: true,
+      required: false,
+      // Allow null values for anonymous users
     },
     transactionId: {
       type: String,
