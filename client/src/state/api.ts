@@ -305,7 +305,7 @@ export const api = createApi({
         goal?: string;
         experience?: string;
         availability?: string;
-        userId?: string;
+        userId?: string | null;
       }
     >({
       query: (registrationData) => ({

@@ -228,7 +228,7 @@ const QRPaymentModal = ({
     try {
       const result = await registerMentoring({
         ...formData,
-        userId: user?.id,
+        userId: user?.id || null,
       }).unwrap();
 
       if (result) {
@@ -668,14 +668,12 @@ export default function Page() {
       return;
     }
 
-    if (!isSignedIn) {
-      // Chưa đăng nhập, chuyển đến trang đăng nhập
-      toast.info("Vui lòng đăng nhập để đăng ký khóa học");
-      router.push("/signin?redirect_url=/hoc-lap-trinh-1-1");
-      return;
-    }
+    // if (!isSignedIn) {
+    //   toast.info("Vui lòng đăng nhập để đăng ký khóa học");
+    //   router.push("/signin?redirect_url=/hoc-lap-trinh-1-1");
+    //   return;
+    // }
 
-    // Đã đăng nhập, hiển thị modal form đăng ký
     setShowQRModal(true);
   };
 
