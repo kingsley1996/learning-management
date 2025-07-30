@@ -5,26 +5,48 @@ import { motion } from "framer-motion";
 import { courseBenefits, learningPath } from "@/constants/course-data";
 import CountdownTimer from "@/components/CountdownTimer";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { useUser, useAuth } from "@clerk/nextjs";
+import CustomModal from "@/components/CustomModal";
+import {
+  useRegisterMentoringMutation,
+  useCheckMentoringStatusQuery,
+  useGetMentoringDetailsQuery,
+} from "@/state/api";
 
 // Component hiển thị progress bar của slots
 const SlotProgressBar = () => {
   const slotInfo = useSlotCounter();
-  
+
   return (
     <div className="w-full max-w-md">
       <div className="flex justify-between text-sm text-gray-400 mb-2">
-        <span>Đã đăng ký: <span className="text-pink-400 font-medium">{slotInfo.registered} học viên</span></span>
-        <span>Còn lại: <span className="text-yellow-400 font-medium">{slotInfo.remaining} slots</span></span>
+        <span>
+          Đã đăng ký:{" "}
+          <span className="text-pink-400 font-medium">
+            {slotInfo.registered} học viên
+          </span>
+        </span>
+        <span>
+          Còn lại:{" "}
+          <span className="text-yellow-400 font-medium">
+            {slotInfo.remaining} slots
+          </span>
+        </span>
       </div>
       <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
-        <div 
-          className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full" 
+        <div
+          className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full"
           style={{ width: `${slotInfo.percentage}%` }}
         />
       </div>
       <div className="flex items-center justify-between text-sm text-gray-400 mt-2">
         <p>
-          <span className="text-pink-400 font-medium">{slotInfo.total} slots</span> được mở trong đợt này
+          <span className="text-pink-400 font-medium">
+            {slotInfo.total} slots
+          </span>{" "}
+          được mở trong đợt này
         </p>
         {slotInfo.remaining < 6 && (
           <p className="text-yellow-400 text-xs animate-pulse">Sắp hết slot!</p>
@@ -39,54 +61,54 @@ const useSlotCounter = () => {
   const [slots, setSlots] = useState({
     registered: 23,
     remaining: 7,
-    total: 30
+    total: 30,
   });
-  
+
   useEffect(() => {
     // Random initial remaining slots between 4-8
     const remaining = Math.floor(Math.random() * 5) + 4;
     const total = 30;
     const registered = total - remaining;
-    
+
     setSlots({
       registered,
       remaining,
-      total
+      total,
     });
-    
+
     // Giảm slot còn lại sau một khoảng thời gian ngẫu nhiên
     const timeout = setTimeout(() => {
       if (slots.remaining > 1) {
-        setSlots(prev => ({
+        setSlots((prev) => ({
           ...prev,
           registered: prev.registered + 1,
-          remaining: prev.remaining - 1
+          remaining: prev.remaining - 1,
         }));
       }
     }, Math.random() * 180000 + 60000); // Giảm slot sau 1-4 phút
-    
+
     return () => clearTimeout(timeout);
   }, [slots.remaining]);
-  
+
   return {
     registered: slots.registered,
     remaining: slots.remaining,
     total: slots.total,
-    percentage: Math.floor((slots.registered / slots.total) * 100)
+    percentage: Math.floor((slots.registered / slots.total) * 100),
   };
 };
 
 // Component hiển thị số người xem ngẫu nhiên
 const ViewerCounter = () => {
   const [viewers, setViewers] = useState(13);
-  
+
   useEffect(() => {
     // Random initial value between 8-20
     setViewers(Math.floor(Math.random() * 13) + 8);
-    
+
     // Định kỳ thay đổi số người xem với một giá trị nhỏ
     const interval = setInterval(() => {
-      setViewers(prev => {
+      setViewers((prev) => {
         // Random change between -1 and +2
         const change = Math.floor(Math.random() * 4) - 1;
         // Ensure viewers stays between 8-25
@@ -94,11 +116,501 @@ const ViewerCounter = () => {
         return newValue;
       });
     }, 5000); // Update every 5 seconds
-    
+
     return () => clearInterval(interval);
   }, []);
-  
+
   return <span className="animate-pulse">{viewers} người đang xem</span>;
+};
+
+// Component hiển thị QR thanh toán
+const QRPaymentModal = ({
+  isOpen,
+  onClose,
+  price,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  price: number;
+}) => {
+  const { user } = useUser();
+
+  // Import hooks từ Redux API
+  const [registerMentoring, { isLoading: isRegistering }] =
+    useRegisterMentoringMutation();
+  const [order, setOrder] = useState<any>(null);
+  const [orderCode, setOrderCode] = useState<string | null>(null);
+  const [showQR, setShowQR] = useState(false);
+  const [polling, setPolling] = useState<boolean>(false);
+  const [paymentSuccess, setPaymentSuccess] = useState<boolean>(false);
+
+  // Polling kiểm tra trạng thái thanh toán
+  const {
+    data: orderStatus,
+    error: statusError,
+    refetch,
+    isLoading: isCheckingStatus,
+    isError,
+  } = useCheckMentoringStatusQuery(orderCode || "", {
+    skip: !orderCode || !polling,
+    pollingInterval: polling ? 3000 : 0, // Tự động polling mỗi 3 giây khi polling=true
+    // Cấu hình thêm để xử lý lỗi tốt hơn
+    refetchOnMountOrArgChange: true,
+  });
+
+  // Form state
+  const [formData, setFormData] = useState({
+    fullName: user?.fullName || "",
+    email: user?.emailAddresses?.[0]?.emailAddress || "",
+    phoneNumber: "",
+    goal: "",
+    experience: "",
+    availability: "",
+  });
+
+  // Form validation
+  const [errors, setErrors] = useState({
+    fullName: "",
+    email: "",
+    phoneNumber: "",
+  });
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    // Clear error when typing
+    if (errors[name as keyof typeof errors]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: "",
+      }));
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {
+      fullName: formData.fullName.trim() === "" ? "Vui lòng nhập họ tên" : "",
+      email: !/^\S+@\S+\.\S+$/.test(formData.email) ? "Email không hợp lệ" : "",
+      phoneNumber: !/^(0|\+84)[0-9]{9,10}$/.test(formData.phoneNumber)
+        ? "Số điện thoại không hợp lệ"
+        : "",
+    };
+
+    setErrors(newErrors);
+    return !Object.values(newErrors).some((error) => error !== "");
+  };
+
+  // Bao bọc hàm onClose để reset state khi đóng modal
+  const handleClose = () => {
+    // Reset lại tất cả state khi đóng modal
+    setShowQR(false);
+    setPolling(false);
+    setPaymentSuccess(false);
+    setOrder(null);
+    setOrderCode(null);
+    onClose();
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
+    // Sử dụng hook RTK Query để gửi đăng ký
+    try {
+      const result = await registerMentoring({
+        ...formData,
+        userId: user?.id,
+      }).unwrap();
+
+      if (result) {
+        setOrder(result);
+        setOrderCode(result.orderCode);
+        setShowQR(true);
+        // Kích hoạt polling khi hiển thị QR
+        setPolling(true);
+
+        console.log("Đã đăng ký mentoring:", result);
+      }
+    } catch (error) {
+      console.error("Lỗi đăng ký mentoring:", error);
+      toast.error("Đã xảy ra lỗi khi đăng ký khóa học");
+    }
+  };
+
+  // Xử lý khi trạng thái thanh toán thay đổi
+  useEffect(() => {
+    // Xử lý orderStatus khi có giá trị
+    if (orderStatus) {
+      console.log("Nhận được trạng thái thanh toán:", orderStatus);
+
+      switch (orderStatus.status) {
+        case "success":
+          toast.success(
+            "Thanh toán thành công! Mình sẽ liên hệ với bạn sớm."
+          );
+          setPolling(false);
+          setPaymentSuccess(true); // Đánh dấu thanh toán thành công
+          break;
+        case "failed":
+          toast.error("Thanh toán thất bại. Vui lòng thử lại.");
+          setPolling(false);
+          break;
+        case "pending":
+          console.log("Đơn hàng đang chờ thanh toán...");
+          break;
+        case "error":
+          console.error("Có lỗi khi kiểm tra trạng thái thanh toán");
+          // Không dừng polling, có thể là lỗi tạm thời
+          break;
+        default:
+          console.log("Trạng thái không xác định:", orderStatus.status);
+      }
+    }
+
+    // Xử lý lỗi API
+    if (isError) {
+      console.error("Lỗi khi kiểm tra trạng thái thanh toán:", statusError);
+      // Hiển thị thông báo lỗi một cách nhẹ nhàng không làm gián đoạn trải nghiệm
+      if (polling) {
+        toast.error(
+          "Đang gặp sự cố khi kiểm tra trạng thái thanh toán, hệ thống sẽ thử lại...",
+          {
+            id: "payment-check-error",
+            duration: 3000,
+          }
+        );
+      }
+      // Không dừng polling khi có lỗi, có thể là lỗi tạm thời
+    }
+  }, [orderStatus, statusError, isError, polling, setPaymentSuccess]);
+
+  // Theo dõi trạng thái polling và log
+  useEffect(() => {
+    if (!orderCode || !polling) return;
+
+    console.log(
+      `Bắt đầu theo dõi trạng thái thanh toán cho đơn hàng: ${orderCode}`
+    );
+
+    return () => {
+      console.log(
+        `Dừng theo dõi trạng thái thanh toán cho đơn hàng: ${orderCode}`
+      );
+    };
+  }, [orderCode, polling]);
+
+  return (
+    <CustomModal isOpen={isOpen} onClose={handleClose}>
+      <div className="p-6 max-w-2xl mx-auto">
+        <h2 className="text-2xl font-semibold text-white mb-2">
+          Đăng Ký Khóa Học Lập Trình Web Fullstack 1-1
+        </h2>
+
+        {!showQR ? (
+          <>
+            <p className="text-gray-300 mb-6">
+              Vui lòng cung cấp thông tin để mình có thể liên hệ với bạn
+              sau khi thanh toán
+            </p>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-200">
+                  Họ và tên <span className="text-red-500">(*)</span>
+                </label>
+                <input
+                  type="text"
+                  name="fullName"
+                  value={formData.fullName}
+                  onChange={handleChange}
+                  className={`w-full px-4 py-2 rounded-lg bg-gray-800/50 border ${
+                    errors.fullName ? "border-red-500" : "border-gray-700"
+                  } text-white focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                  placeholder="Nhập họ và tên của bạn"
+                />
+                {errors.fullName && (
+                  <p className="text-red-500 text-xs mt-1">{errors.fullName}</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-200">
+                  Email <span className="text-red-500">(*)</span>
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className={`w-full px-4 py-2 rounded-lg bg-gray-800/50 border ${
+                    errors.email ? "border-red-500" : "border-gray-700"
+                  } text-white focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                  placeholder="example@email.com"
+                />
+                {errors.email && (
+                  <p className="text-red-500 text-xs mt-1">{errors.email}</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-200">
+                  Số điện thoại <span className="text-red-500">(*)</span>
+                </label>
+                <input
+                  type="tel"
+                  name="phoneNumber"
+                  value={formData.phoneNumber}
+                  onChange={handleChange}
+                  className={`w-full px-4 py-2 rounded-lg bg-gray-800/50 border ${
+                    errors.phoneNumber ? "border-red-500" : "border-gray-700"
+                  } text-white focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                  placeholder="0xxxxxxxxx"
+                />
+                {errors.phoneNumber && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.phoneNumber}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-200">
+                  Mục tiêu học tập{" "}
+                  <span className="text-xs text-gray-400">
+                    (Không bắt buộc nhập)
+                  </span>
+                </label>
+                <textarea
+                  name="goal"
+                  value={formData.goal}
+                  onChange={handleChange}
+                  rows={2}
+                  className="w-full px-4 py-2 rounded-lg bg-gray-800/50 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Bạn muốn đạt được gì sau khóa học này?"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-200">
+                  Kinh nghiệm lập trình{" "}
+                  <span className="text-xs text-gray-400">
+                    (Không bắt buộc nhập)
+                  </span>
+                </label>
+                <textarea
+                  name="experience"
+                  value={formData.experience}
+                  onChange={handleChange}
+                  rows={2}
+                  className="w-full px-4 py-2 rounded-lg bg-gray-800/50 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Mô tả ngắn gọn kinh nghiệm lập trình của bạn (nếu có)"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-200">
+                  Thời gian học phù hợp{" "}
+                  <span className="text-xs text-gray-400">
+                    (Không bắt buộc nhập)
+                  </span>
+                </label>
+                <textarea
+                  name="availability"
+                  value={formData.availability}
+                  onChange={handleChange}
+                  rows={2}
+                  className="w-full px-4 py-2 rounded-lg bg-gray-800/50 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Ví dụ: Tối thứ 2,4,6 từ 19h-21h hoặc cuối tuần"
+                />
+              </div>
+
+              <div className="pt-2">
+                <p className="text-sm text-gray-400 mb-4">
+                  * Thông tin của bạn sẽ được bảo mật và chỉ sử dụng để liên hệ
+                  về khóa học
+                </p>
+
+                <div className="flex justify-between">
+                  <button
+                    type="button"
+                    onClick={handleClose}
+                    className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors"
+                  >
+                    Hủy
+                  </button>
+
+                  <button
+                    type="submit"
+                    disabled={isRegistering}
+                    className={`px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg transition-all ${
+                      isRegistering
+                        ? "opacity-70 cursor-not-allowed"
+                        : "hover:from-blue-600 hover:to-purple-700"
+                    }`}
+                  >
+                    {isRegistering ? (
+                      <div className="flex items-center">
+                        <svg
+                          className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                        Đang xử lý...
+                      </div>
+                    ) : (
+                      "Tiếp tục thanh toán"
+                    )}
+                  </button>
+                </div>
+              </div>
+            </form>
+          </>
+        ) : (
+          <>
+            <h3 className="text-xl text-white mb-4">Thanh Toán Qua VietQR</h3>
+            <p className="text-gray-300 mb-6">
+              Quét mã QR bên dưới để hoàn tất thanh toán
+            </p>
+
+            {isRegistering ? (
+              <div className="my-8 flex flex-col items-center justify-center">
+                <div className="w-12 h-12 border-4 border-t-transparent border-blue-500 rounded-full animate-spin"></div>
+                <p className="mt-4 text-gray-300">Đang tạo mã QR...</p>
+              </div>
+            ) : order ? (
+              <div className="flex flex-col items-center">
+                {!paymentSuccess ? (
+                  <>
+                    <div className="bg-white p-4 rounded-lg mb-4">
+                      <Image
+                        src={order.imageQR}
+                        alt="QR code"
+                        width={250}
+                        height={250}
+                        style={{ margin: "0 auto" }}
+                      />
+                    </div>
+                    <div className="bg-gray-800/50 p-4 rounded-lg w-full max-w-sm">
+                      <p className="text-gray-300 mb-2">
+                        Mã đơn hàng:{" "}
+                        <span className="text-white font-medium">
+                          {order.orderCode}
+                        </span>
+                      </p>
+                      <p className="text-gray-300 mb-2">
+                        Số tiền:{" "}
+                        <span className="text-green-400 font-medium">
+                          {order.amount?.toLocaleString()} VND
+                        </span>
+                      </p>
+                      <div className="mt-4 py-2 bg-gray-700/30 rounded-lg flex items-center justify-center">
+                        <svg
+                          className="w-5 h-5 text-yellow-400 animate-spin mr-2"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
+                        </svg>
+                        <p className="text-yellow-200 text-sm">
+                          {polling
+                            ? isCheckingStatus
+                              ? "Đang kiểm tra trạng thái thanh toán..."
+                              : "Đang chờ xác nhận thanh toán..."
+                            : "Vui lòng thanh toán để hoàn tất đăng ký"}
+                        </p>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div className="bg-gray-800/50 p-6 rounded-lg w-full max-w-md text-center">
+                    <div className="flex justify-center mb-4">
+                      <div className="h-16 w-16 rounded-full bg-green-500/20 flex items-center justify-center">
+                        <svg 
+                          className="h-8 w-8 text-green-500" 
+                          fill="none" 
+                          viewBox="0 0 24 24" 
+                          stroke="currentColor"
+                        >
+                          <path 
+                            strokeLinecap="round" 
+                            strokeLinejoin="round" 
+                            strokeWidth={2} 
+                            d="M5 13l4 4L19 7" 
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                    <h3 className="text-xl font-semibold text-green-400 mb-2">Thanh Toán Thành Công!</h3>
+                    <p className="text-white mb-2">Mã đơn hàng: <span className="font-medium">{order.orderCode}</span></p>
+                    <p className="text-white mb-4">Số tiền: <span className="font-medium text-green-400">{order.amount?.toLocaleString()} VND</span></p>
+                    <div className="bg-gray-700/30 p-4 rounded-lg mb-4">
+                      <p className="text-gray-200">
+                        Mình đã nhận được thông tin đăng ký của bạn và sẽ liên hệ với bạn trong vòng 24h tới để xác nhận lịch học.
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                <div className="mt-6">
+                  <p className="text-sm text-gray-400">
+                    Sau khi thanh toán thành công, bên mình sẽ liên hệ với bạn
+                    trong vòng 24h để xác nhận lịch học.
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="my-8 text-red-400">
+                <p>Không thể tạo mã QR thanh toán. Vui lòng thử lại sau.</p>
+              </div>
+            )}
+
+            <div className="mt-6 flex justify-center">
+              <button
+                onClick={handleClose}
+                className={`px-4 py-2 ${
+                  paymentSuccess 
+                    ? "bg-gradient-to-r from-green-600 to-emerald-700 hover:from-green-700 hover:to-emerald-800" 
+                    : "bg-gray-700 hover:bg-gray-600"
+                } text-white rounded-lg transition-colors`}
+              >
+                {paymentSuccess ? "Hoàn Tất" : "Đóng"}
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    </CustomModal>
+  );
 };
 
 const GradientBorder = ({ color }: { color: string }) => {
@@ -110,25 +622,66 @@ const GradientBorder = ({ color }: { color: string }) => {
 };
 
 // Hiệu ứng viền gradient chạy
-const AnimatedBorder = ({ color, cardIndex }: { color: string, cardIndex: number }) => {
+const AnimatedBorder = ({
+  color,
+  cardIndex,
+}: {
+  color: string;
+  cardIndex: number;
+}) => {
   // Sử dụng object mapping thay vì string interpolation với opacity thấp hơn (30%)
   const gradientClasses: Record<string, string> = {
-    'blue': 'absolute -inset-[1px] rounded-xl bg-gradient-to-r from-transparent via-blue-500/30 to-transparent animate-border-flow',
-    'purple': 'absolute -inset-[1px] rounded-xl bg-gradient-to-r from-transparent via-purple-500/30 to-transparent animate-border-flow',
-    'pink': 'absolute -inset-[1px] rounded-xl bg-gradient-to-r from-transparent via-pink-500/30 to-transparent animate-border-flow',
-    'cyan': 'absolute -inset-[1px] rounded-xl bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent animate-border-flow',
-    'green': 'absolute -inset-[1px] rounded-xl bg-gradient-to-r from-transparent via-green-500/30 to-transparent animate-border-flow',
-    'amber': 'absolute -inset-[1px] rounded-xl bg-gradient-to-r from-transparent via-amber-500/30 to-transparent animate-border-flow',
+    blue: "absolute -inset-[1px] rounded-xl bg-gradient-to-r from-transparent via-blue-500/30 to-transparent animate-border-flow",
+    purple:
+      "absolute -inset-[1px] rounded-xl bg-gradient-to-r from-transparent via-purple-500/30 to-transparent animate-border-flow",
+    pink: "absolute -inset-[1px] rounded-xl bg-gradient-to-r from-transparent via-pink-500/30 to-transparent animate-border-flow",
+    cyan: "absolute -inset-[1px] rounded-xl bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent animate-border-flow",
+    green:
+      "absolute -inset-[1px] rounded-xl bg-gradient-to-r from-transparent via-green-500/30 to-transparent animate-border-flow",
+    amber:
+      "absolute -inset-[1px] rounded-xl bg-gradient-to-r from-transparent via-amber-500/30 to-transparent animate-border-flow",
   };
-  
+
   return (
-    <div className={`absolute inset-0 rounded-xl overflow-hidden z-0 card-${cardIndex}`}>
-      <div className={gradientClasses[color] || 'absolute -inset-[1px] rounded-xl bg-gradient-to-r from-transparent via-blue-500 to-transparent animate-border-flow'}></div>
+    <div
+      className={`absolute inset-0 rounded-xl overflow-hidden z-0 card-${cardIndex}`}
+    >
+      <div
+        className={
+          gradientClasses[color] ||
+          "absolute -inset-[1px] rounded-xl bg-gradient-to-r from-transparent via-blue-500 to-transparent animate-border-flow"
+        }
+      ></div>
     </div>
   );
 };
 
 export default function Page() {
+  const [showQRModal, setShowQRModal] = useState(false);
+  const { isLoaded, isSignedIn, user } = useUser();
+  const router = useRouter();
+
+  const handleRegisterClick = () => {
+    if (!isLoaded) {
+      // Đang tải thông tin user
+      toast.loading("Đang tải thông tin...");
+      return;
+    }
+
+    if (!isSignedIn) {
+      // Chưa đăng nhập, chuyển đến trang đăng nhập
+      toast.info("Vui lòng đăng nhập để đăng ký khóa học");
+      router.push("/sign-in?redirect_url=/hoc-lap-trinh-1-1");
+      return;
+    }
+
+    // Đã đăng nhập, hiển thị modal form đăng ký
+    setShowQRModal(true);
+  };
+
+  const coursePrice = 1499000; // Giá khóa học: 1.499.000 VND
+  // const coursePrice = 2000; // Giá khóa học: 1.999.999 VND
+
   return (
     <main className="min-h-screen w-full">
       <section className="relative w-full flex flex-col items-center justify-center overflow-hidden pt-20 pb-10">
@@ -195,7 +748,7 @@ export default function Page() {
                 src="/five-star.webp"
               />
               <p className="text-balance text-sm italic leading-relaxed text-blue-200 sm:text-lg">
-                &ldquo;Phương pháp học 1-1 giúp tôi tiến bộ nhanh chóng. Mentor
+                &ldquo;Phương pháp học 1-1 giúp mình tiến bộ nhanh chóng. Mentor
                 hướng dẫn rất tận tâm và chuyên nghiệp&rdquo;
               </p>
             </motion.div>
@@ -215,7 +768,7 @@ export default function Page() {
                 src="/five-star.webp"
               />
               <p className="text-balance text-sm italic leading-relaxed text-blue-200 sm:text-lg">
-                &ldquo;Từ người mới bắt đầu, giờ tôi đã có thể làm việc như một
+                &ldquo;Từ người mới bắt đầu, giờ mình đã có thể làm việc như một
                 Fullstack Developer thực thụ&rdquo;
               </p>
             </motion.div>
@@ -665,7 +1218,9 @@ export default function Page() {
                   path.color
                 }-500/20 group-hover:border-${
                   path.color
-                }-500/30 transition-all ${index % 2 === 0 ? "mr-4 sm:mr-8" : "ml-4 sm:ml-8"}`}
+                }-500/30 transition-all ${
+                  index % 2 === 0 ? "mr-4 sm:mr-8" : "ml-4 sm:ml-8"
+                }`}
               >
                 <div className="flex flex-col gap-3 sm:gap-4">
                   <div>
@@ -720,7 +1275,8 @@ export default function Page() {
             Lợi Ích Khi Tham Gia Khóa Học
           </h2>
           <p className="text-gray-300">
-            Những giá trị thiết thực mà bạn sẽ nhận được khi tham gia khóa học 1-1 với mentor
+            Những giá trị thiết thực mà bạn sẽ nhận được khi tham gia khóa học
+            1-1 với mentor
           </p>
         </motion.div>
 
@@ -742,11 +1298,13 @@ export default function Page() {
                 Lộ Trình Cá Nhân Hóa
               </h3>
               <p className="text-gray-300">
-                Lộ trình học được thiết kế riêng theo khả năng và mục tiêu của bạn, giúp bạn tiến bộ nhanh hơn. Phù hợp với cả những bạn chưa có kinh nghiệm về lập trình.
+                Lộ trình học được thiết kế riêng theo khả năng và mục tiêu của
+                bạn, giúp bạn tiến bộ nhanh hơn. Phù hợp với cả những bạn chưa
+                có kinh nghiệm về lập trình.
               </p>
             </div>
           </motion.div>
-          
+
           {/* Card 2 */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -764,11 +1322,13 @@ export default function Page() {
                 Học Với Dự Án Thực Tế
               </h3>
               <p className="text-gray-300">
-                Xây dựng các dự án thực tế có giá trị thay vì chỉ học lý thuyết. Portfolio của bạn sẽ có những sản phẩm ấn tượng để trình diễn với nhà tuyển dụng.
+                Xây dựng các dự án thực tế có giá trị thay vì chỉ học lý thuyết.
+                Portfolio của bạn sẽ có những sản phẩm ấn tượng để trình diễn
+                với nhà tuyển dụng.
               </p>
             </div>
           </motion.div>
-          
+
           {/* Card 3 */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -786,11 +1346,13 @@ export default function Page() {
                 Truy cập các khoá học Online
               </h3>
               <p className="text-gray-300">
-                Được quyền truy cập sớm vào các khoá học online chất lượng, được dành riêng cho học viên đăng ký. Giúp bạn củng cố kiến thức và mở rộng kỹ năng lập trình một cách linh hoạt.
+                Được quyền truy cập sớm vào các khoá học online chất lượng, được
+                dành riêng cho học viên đăng ký. Giúp bạn củng cố kiến thức và
+                mở rộng kỹ năng lập trình một cách linh hoạt.
               </p>
             </div>
           </motion.div>
-          
+
           {/* Card 4 */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -808,11 +1370,13 @@ export default function Page() {
                 Tư Vấn Nghề Nghiệp
               </h3>
               <p className="text-gray-300">
-                Nhận được tư vấn về con đường sự nghiệp, cách xây dựng CV, chuẩn bị phỏng vấn và định hướng phát triển kỹ năng phù hợp với mục tiêu công việc.
+                Nhận được tư vấn về con đường sự nghiệp, cách xây dựng CV, chuẩn
+                bị phỏng vấn và định hướng phát triển kỹ năng phù hợp với mục
+                tiêu công việc.
               </p>
             </div>
           </motion.div>
-          
+
           {/* Card 5 */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -830,11 +1394,13 @@ export default function Page() {
                 Coding Review Chất Lượng
               </h3>
               <p className="text-gray-300">
-                Mã code của bạn sẽ được review kỹ lưỡng, giúp xây dựng thói quen viết code sạch, tối ưu và theo chuẩn ngành từ sớm - kỹ năng quan trọng với mọi developer.
+                Mã code của bạn sẽ được review kỹ lưỡng, giúp xây dựng thói quen
+                viết code sạch, tối ưu và theo chuẩn ngành từ sớm - kỹ năng quan
+                trọng với mọi developer.
               </p>
             </div>
           </motion.div>
-          
+
           {/* Card 6 */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -852,7 +1418,9 @@ export default function Page() {
                 Giải đáp thắc mắc
               </h3>
               <p className="text-gray-300">
-                Trong suốt quá trình học, bạn sẽ được mentor giải đáp mọi thắc mắc về lập trình, công nghệ và định hướng nghề nghiệp. Đảm bảo bạn không bao giờ cảm thấy lạc lõng hay bối rối.
+                Trong suốt quá trình học, bạn sẽ được mentor giải đáp mọi thắc
+                mắc về lập trình, công nghệ và định hướng nghề nghiệp. Đảm bảo
+                bạn không bao giờ cảm thấy lạc lõng hay bối rối.
               </p>
             </div>
           </motion.div>
@@ -871,7 +1439,8 @@ export default function Page() {
             Học Viên Nói Gì Về Khóa Học
           </h2>
           <p className="text-gray-300">
-            Trải nghiệm thực tế từ những học viên đã hoàn thành khóa học và đi làm thực tế
+            Trải nghiệm thực tế từ những học viên đã hoàn thành khóa học và đi
+            làm thực tế
           </p>
         </motion.div>
 
@@ -894,7 +1463,9 @@ export default function Page() {
               />
               <div className="mb-4">
                 <h3 className="text-lg font-bold text-white">Rukyono</h3>
-                <p className="text-blue-400 text-sm">Junior Frontend Developer</p>
+                <p className="text-blue-400 text-sm">
+                  Junior Frontend Developer
+                </p>
               </div>
               <Image
                 alt="5 out of 5 stars"
@@ -904,10 +1475,14 @@ export default function Page() {
                 src="/five-star.webp"
               />
               <p className="text-gray-300 mb-4">
-                &ldquo;Sau 3 tháng học, mình đã có thể phát triển được các ứng dụng web hoàn chỉnh. Mentor hướng dẫn tận tâm, giải đáp mọi thắc mắc kể cả ngoài giờ học. Kiến thức thực tiễn và cập nhật với xu hướng công nghệ.&rdquo;
+                &ldquo;Sau 3 tháng học, mình đã có thể phát triển được các ứng
+                dụng web hoàn chỉnh. Mentor hướng dẫn tận tâm, giải đáp mọi thắc
+                mắc kể cả ngoài giờ học. Kiến thức thực tiễn và cập nhật với xu
+                hướng công nghệ.&rdquo;
               </p>
               <p className="text-blue-300 italic text-sm">
-                ⟶ Đã apply thành công vào vị trí Frontend Developer với mức lương 14 triệu/tháng
+                ⟶ Đã apply thành công vào vị trí Frontend Developer với mức
+                lương 14 triệu/tháng
               </p>
             </motion.div>
 
@@ -938,10 +1513,14 @@ export default function Page() {
                 src="/five-star.webp"
               />
               <p className="text-gray-300 mb-4">
-                &ldquo;Mình đã thử học ở nhiều nền tảng khác nhau nhưng không đâu hiệu quả bằng học 1-1 với Samuel. Khóa học thiết kế riêng cho mình, giúp mình tiến bộ nhanh hơn hẳn so với tự học. Rất đáng đồng tiền bát gạo!&rdquo;
+                &ldquo;Mình đã thử học ở nhiều nền tảng khác nhau nhưng không
+                đâu hiệu quả bằng học 1-1 với Samuel. Khóa học thiết kế riêng
+                cho mình, giúp mình tiến bộ nhanh hơn hẳn so với tự học. Rất
+                đáng đồng tiền bát gạo!&rdquo;
               </p>
               <p className="text-purple-300 italic text-sm">
-                ⟶ Chuyển từ nhân viên marketing sang Fullstack Developer với mức lương tăng gấp đôi
+                ⟶ Chuyển từ nhân viên marketing sang Fullstack Developer với mức
+                lương tăng gấp đôi
               </p>
             </motion.div>
 
@@ -972,7 +1551,10 @@ export default function Page() {
                 src="/five-star.webp"
               />
               <p className="text-gray-300 mb-4">
-                &ldquo;Bắt đầu từ con số 0, giờ mình đã tự tin làm việc trong môi trường công nghệ. Aanh Samuel không chỉ dạy code mà còn hướng dẫn cách giao tiếp, làm việc nhóm và cách học tập độc lập sau khóa học.&rdquo;
+                &ldquo;Bắt đầu từ con số 0, giờ mình đã tự tin làm việc trong
+                môi trường công nghệ. Aanh Samuel không chỉ dạy code mà còn
+                hướng dẫn cách giao tiếp, làm việc nhóm và cách học tập độc lập
+                sau khóa học.&rdquo;
               </p>
               <p className="text-pink-300 italic text-sm">
                 ⟶ Vượt qua phỏng vấn 3 công ty công nghệ hàng đầu Việt Nam
@@ -1010,14 +1592,32 @@ export default function Page() {
             >
               <details className="group">
                 <summary className="flex cursor-pointer items-center justify-between p-6 text-white font-medium">
-                  <span>Tôi chưa biết gì về lập trình, có thể tham gia khóa học không?</span>
-                  <svg className="h-5 w-5 transform transition-transform group-open:rotate-180" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                  <span>
+                    Mình chưa biết gì về lập trình, có thể tham gia khóa học
+                    không?
+                  </span>
+                  <svg
+                    className="h-5 w-5 transform transition-transform group-open:rotate-180"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M19 9l-7 7-7-7"
+                    />
                   </svg>
                 </summary>
                 <div className="border-t border-blue-500/20 px-6 py-4">
                   <p className="text-gray-300">
-                    Hoàn toàn có thể! Khóa học được thiết kế để phù hợp với cả những người mới bắt đầu. Mentor sẽ xây dựng lộ trình học phù hợp với trình độ của bạn, bắt đầu từ những kiến thức cơ bản nhất và tiến dần đến nâng cao. Bạn chỉ cần có máy tính cá nhân và kết nối internet ổn định là có thể học được.
+                    Hoàn toàn có thể! Khóa học được thiết kế để phù hợp với cả
+                    những người mới bắt đầu. Mentor sẽ xây dựng lộ trình học phù
+                    hợp với trình độ của bạn, bắt đầu từ những kiến thức cơ bản
+                    nhất và tiến dần đến nâng cao. Bạn chỉ cần có máy tính cá
+                    nhân và kết nối internet ổn định là có thể học được.
                   </p>
                 </div>
               </details>
@@ -1034,13 +1634,29 @@ export default function Page() {
               <details className="group">
                 <summary className="flex cursor-pointer items-center justify-between p-6 text-white font-medium">
                   <span>Lịch học linh hoạt như thế nào?</span>
-                  <svg className="h-5 w-5 transform transition-transform group-open:rotate-180" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                  <svg
+                    className="h-5 w-5 transform transition-transform group-open:rotate-180"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M19 9l-7 7-7-7"
+                    />
                   </svg>
                 </summary>
                 <div className="border-t border-purple-500/20 px-6 py-4">
                   <p className="text-gray-300">
-                    Bạn có thể lựa chọn thời gian học linh hoạt phù hợp với lịch trình cá nhân. Thông thường, mỗi tuần sẽ có 2-3 buổi học, mỗi buổi kéo dài 1.5-2 giờ. Lịch học có thể vào buổi tối các ngày trong tuần hoặc cả ngày cuối tuần. Bạn và mentor sẽ thống nhất lịch học phù hợp với cả hai bên trước khi bắt đầu khóa học.
+                    Bạn có thể lựa chọn thời gian học linh hoạt phù hợp với lịch
+                    trình cá nhân. Thông thường, mỗi tuần sẽ có 2-3 buổi học,
+                    mỗi buổi kéo dài 1.5-2 giờ. Lịch học có thể vào buổi tối các
+                    ngày trong tuần hoặc cả ngày cuối tuần. Bạn và mentor sẽ
+                    thống nhất lịch học phù hợp với cả hai bên trước khi bắt đầu
+                    khóa học.
                   </p>
                 </div>
               </details>
@@ -1056,14 +1672,31 @@ export default function Page() {
             >
               <details className="group">
                 <summary className="flex cursor-pointer items-center justify-between p-6 text-white font-medium">
-                  <span>Tôi có được hỗ trợ tìm việc sau khi hoàn thành khóa học không?</span>
-                  <svg className="h-5 w-5 transform transition-transform group-open:rotate-180" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                  <span>
+                    Mình có được hỗ trợ tìm việc sau khi hoàn thành khóa học
+                    không?
+                  </span>
+                  <svg
+                    className="h-5 w-5 transform transition-transform group-open:rotate-180"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M19 9l-7 7-7-7"
+                    />
                   </svg>
                 </summary>
                 <div className="border-t border-pink-500/20 px-6 py-4">
                   <p className="text-gray-300">
-                    Có! Sau khi hoàn thành khóa học, bạn sẽ nhận được hỗ trợ toàn diện trong việc tìm kiếm việc làm, bao gồm: xây dựng CV chuyên nghiệp, chuẩn bị portfolio ấn tượng, luyện tập phỏng vấn kỹ thuật
+                    Có! Sau khi hoàn thành khóa học, bạn sẽ nhận được hỗ trợ
+                    toàn diện trong việc tìm kiếm việc làm, bao gồm: xây dựng CV
+                    chuyên nghiệp, chuẩn bị portfolio ấn tượng, luyện tập phỏng
+                    vấn kỹ thuật
                   </p>
                 </div>
               </details>
@@ -1079,14 +1712,32 @@ export default function Page() {
             >
               <details className="group">
                 <summary className="flex cursor-pointer items-center justify-between p-6 text-white font-medium">
-                  <span>Nếu tôi có câu hỏi hoặc cần hỗ trợ ngoài giờ học, mentor có thể trả lời không?</span>
-                  <svg className="h-5 w-5 transform transition-transform group-open:rotate-180" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                  <span>
+                    Nếu mình có câu hỏi hoặc cần hỗ trợ ngoài giờ học, mentor có
+                    thể trả lời không?
+                  </span>
+                  <svg
+                    className="h-5 w-5 transform transition-transform group-open:rotate-180"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M19 9l-7 7-7-7"
+                    />
                   </svg>
                 </summary>
                 <div className="border-t border-cyan-500/20 px-6 py-4">
                   <p className="text-gray-300">
-                    Có! Học viên được hỗ trợ tích cực từ Mentor kể cả ngoài giờ học. Bạn có thể gửi câu hỏi qua email hoặc nhóm chat riêng, mentor sẽ phản hồi trong thời gian sớm nhất có thể. Điều này giúp bạn không bị lạc lõng và luôn có người hỗ trợ khi cần thiết.
+                    Có! Học viên được hỗ trợ tích cực từ Mentor kể cả ngoài giờ
+                    học. Bạn có thể gửi câu hỏi qua email hoặc nhóm chat riêng,
+                    mentor sẽ phản hồi trong thời gian sớm nhất có thể. Điều này
+                    giúp bạn không bị lạc lõng và luôn có người hỗ trợ khi cần
+                    thiết.
                   </p>
                 </div>
               </details>
@@ -1095,141 +1746,295 @@ export default function Page() {
         </div>
       </section>
 
-<section className="mb-20 px-4">
-  <motion.div
-    initial={{ opacity: 0 }}
-    whileInView={{ opacity: 1 }}
-    transition={{ duration: 0.5 }}
-    className="mx-auto max-w-4xl rounded-2xl bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 p-8 text-center backdrop-blur-sm border border-gray-700/50 relative overflow-hidden"
-  >
-    {/* Floating Sparkles */}
-    <div className="absolute inset-0">
-      <div className="absolute top-12 left-8 w-3 h-3 bg-blue-500 rounded-full animate-ping" style={{ animationDuration: '3s' }} />
-      <div className="absolute bottom-12 right-8 w-3 h-3 bg-purple-500 rounded-full animate-ping" style={{ animationDuration: '2.5s' }} />
-      <div className="absolute top-1/2 right-12 w-2 h-2 bg-pink-500 rounded-full animate-ping" style={{ animationDuration: '2s' }} />
-    </div>
-
-    <div className="relative">
-      <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-4">
-        <span className="inline-block px-4 py-2 rounded-full text-sm font-semibold text-pink-300 bg-pink-500/10 border border-pink-500/20">
-          <span className="inline-flex items-center">
-            <svg className="w-4 h-4 mr-1 animate-pulse" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd"></path>
-            </svg>
-            Ưu đãi kết thúc sau khi đếm ngược kết thúc
-          </span>
-        </span>
-        
-        <span className="inline-block px-4 py-2 rounded-full text-sm font-semibold text-cyan-300 bg-cyan-500/10 border border-cyan-500/20">
-          <span className="inline-flex items-center">
-            <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-              <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
-              <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd"></path>
-            </svg>
-            <ViewerCounter />
-          </span>
-        </span>
-      </div>
-      
-      <h3 className="text-3xl md:text-4xl font-bold text-white mb-2">
-        Đăng Ký Sớm - Tiết Kiệm 70%
-      </h3>
-      
-      <h4 className="text-xl text-green-500 mb-4">Trở Thành Lập Trình Viên Trong 3 Tháng Chỉ Với</h4>
-
-      <div className="flex flex-col items-center justify-center mb-4 sm:mb-6">
-        <div className="flex items-center gap-2 mb-2">
-          <span className="text-xl sm:text-2xl text-gray-400 line-through">4.999.999₫</span>
-          <span className="text-3xl sm:text-4xl font-bold text-white">1.999.999₫</span>
-        </div>
-        <span className="inline-block px-3 py-1 bg-green-500/20 text-green-300 text-xs sm:text-sm rounded-full mb-3 sm:mb-4">
-          <span className="animate-pulse">Tiết kiệm 3.000.000₫</span> - Giảm giá 70%
-        </span>
-
-        {/* Slot Progress */}
-        <SlotProgressBar />
-      </div>
-
-      <CountdownTimer targetDate={new Date('2025-08-01')} />
-
-      <ul className="mb-8 space-y-3">
-        <li className="flex items-center justify-center text-gray-300">
-          <svg className="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-          </svg>
-          Học 1-1 với mentor chuyên nghiệp
-        </li>
-        <li className="flex items-center justify-center text-gray-300">
-          <svg className="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-          </svg>
-          Lộ trình học tập cá nhân hóa
-        </li>
-        <li className="flex items-center justify-center text-gray-300">
-          <svg className="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-          </svg>
-          Hỗ trợ định hướng nghề nghiệp
-        </li>
-      </ul>
-
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        className="rounded-lg bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 px-8 py-4 font-semibold text-white text-xl shadow-lg hover:shadow-xl transition-all group relative overflow-hidden"
-      >
-        <div className="absolute -inset-1 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 opacity-30 group-hover:opacity-50 blur-lg transition-opacity duration-300"></div>
-        <span className="relative flex items-center justify-center">
-          <svg className="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z" clipRule="evenodd"></path>
-          </svg>
-          Đăng Ký Ngay - Giữ Chỗ
-        </span>
-      </motion.button>
-      
-      <div className="mt-6 flex flex-col gap-3">
-        <div className="w-full max-w-md mx-auto bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3 mb-1">
-          <p className="text-yellow-300 text-sm text-center font-medium">
-            <span className="inline-flex items-center justify-center">
-              <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path>
-              </svg>
-              Cam kết hoàn tiền 100% trong 7 ngày nếu không hài lòng
-            </span>
-          </p>
-        </div>
-        
-        <div className="flex flex-wrap justify-center gap-3 mb-4">
-          <div className="bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full flex items-center">
-            <svg className="w-4 h-4 mr-1 text-blue-300" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path>
-            </svg>
-            <span className="text-xs text-gray-300">Thanh toán an toàn</span>
+      <section className="mb-20 px-4">
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="mx-auto max-w-4xl rounded-2xl bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 p-8 text-center backdrop-blur-sm border border-gray-700/50 relative overflow-hidden"
+        >
+          {/* Floating Sparkles */}
+          <div className="absolute inset-0">
+            <div
+              className="absolute top-12 left-8 w-3 h-3 bg-blue-500 rounded-full animate-ping"
+              style={{ animationDuration: "3s" }}
+            />
+            <div
+              className="absolute bottom-12 right-8 w-3 h-3 bg-purple-500 rounded-full animate-ping"
+              style={{ animationDuration: "2.5s" }}
+            />
+            <div
+              className="absolute top-1/2 right-12 w-2 h-2 bg-pink-500 rounded-full animate-ping"
+              style={{ animationDuration: "2s" }}
+            />
           </div>
-          <div className="bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full flex items-center">
-            <svg className="w-4 h-4 mr-1 text-blue-300" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-              <path d="M11 17a1 1 0 001.447.894l4-2A1 1 0 0017 15V9.236a1 1 0 00-1.447-.894l-4 2a1 1 0 00-.553.894V17zM15.211 6.276a1 1 0 000-1.788l-4.764-2.382a1 1 0 00-.894 0L4.789 4.488a1 1 0 000 1.788l4.764 2.382a1 1 0 00.894 0l4.764-2.382zM4.447 8.342A1 1 0 003 9.236V15a1 1 0 00.553.894l4 2A1 1 0 009 17v-5.764a1 1 0 00-.553-.894l-4-2z"></path>
-            </svg>
-            <span className="text-xs text-gray-300">Tài liệu học tập đầy đủ</span>
+
+          <div className="relative">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-4">
+              <span className="inline-block px-4 py-2 rounded-full text-sm font-semibold text-pink-300 bg-pink-500/10 border border-pink-500/20">
+                <span className="inline-flex items-center">
+                  <svg
+                    className="w-4 h-4 mr-1 animate-pulse"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                      clipRule="evenodd"
+                    ></path>
+                  </svg>
+                  Ưu đãi kết thúc sau khi đếm ngược kết thúc
+                </span>
+              </span>
+
+              <span className="inline-block px-4 py-2 rounded-full text-sm font-semibold text-cyan-300 bg-cyan-500/10 border border-cyan-500/20">
+                <span className="inline-flex items-center">
+                  <svg
+                    className="w-4 h-4 mr-1"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
+                    <path
+                      fillRule="evenodd"
+                      d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+                      clipRule="evenodd"
+                    ></path>
+                  </svg>
+                  <ViewerCounter />
+                </span>
+              </span>
+            </div>
+
+            <h3 className="text-3xl md:text-4xl font-bold text-white mb-2">
+              Đăng Ký Sớm - Tiết Kiệm 70%
+            </h3>
+
+            <h4 className="text-xl text-green-500 mb-4">
+              Trở Thành Lập Trình Viên Trong 3 Tháng Chỉ Với
+            </h4>
+
+            <div className="flex flex-col items-center justify-center mb-4 sm:mb-6">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-xl sm:text-2xl text-gray-400 line-through">
+                  4.499.000₫
+                </span>
+                <span className="text-3xl sm:text-4xl font-bold text-white">
+                  1.499.000₫
+                </span>
+              </div>
+              <span className="inline-block px-3 py-1 bg-green-500/20 text-green-300 text-xs sm:text-sm rounded-full mb-3 sm:mb-4">
+                <span className="animate-pulse">Tiết kiệm 3.000.000₫</span> -
+                Giảm giá 70%
+              </span>
+
+              <div className="flex items-center justify-center gap-3 mb-3">
+                <div className="flex items-center gap-2 bg-blue-500/10 border border-blue-500/30 px-4 py-2 rounded-lg">
+                  <svg
+                    className="w-6 h-6 text-blue-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    ></path>
+                  </svg>
+                  <span className="text-sm text-blue-300">
+                    Thanh toán VietQR
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 bg-purple-500/10 border border-purple-500/30 px-4 py-2 rounded-lg">
+                  <svg
+                    className="w-6 h-6 text-purple-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                    ></path>
+                  </svg>
+                  <span className="text-sm text-purple-300">Bảo mật 100%</span>
+                </div>
+              </div>
+
+              {/* Slot Progress */}
+              <SlotProgressBar />
+            </div>
+
+            <CountdownTimer targetDate={new Date("2025-08-01")} />
+
+            <ul className="mb-8 space-y-3">
+              <li className="flex items-center justify-center text-gray-300">
+                <svg
+                  className="w-5 h-5 mr-2 text-green-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                Học 1-1 với mentor chuyên nghiệp
+              </li>
+              <li className="flex items-center justify-center text-gray-300">
+                <svg
+                  className="w-5 h-5 mr-2 text-green-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                Lộ trình học tập cá nhân hóa
+              </li>
+              <li className="flex items-center justify-center text-gray-300">
+                <svg
+                  className="w-5 h-5 mr-2 text-green-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                Hỗ trợ định hướng nghề nghiệp
+              </li>
+            </ul>
+
+            <motion.button
+              onClick={handleRegisterClick}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="rounded-lg bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 px-8 py-4 font-semibold text-white text-xl shadow-lg hover:shadow-xl transition-all group relative overflow-hidden"
+            >
+              <div className="absolute -inset-1 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 opacity-30 group-hover:opacity-50 blur-lg transition-opacity duration-300"></div>
+              <span className="relative flex items-center justify-center">
+                <svg
+                  className="w-6 h-6 mr-2"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z"
+                    clipRule="evenodd"
+                  ></path>
+                </svg>
+                Đăng Ký & Thanh Toán Ngay
+              </span>
+            </motion.button>
+
+            <div className="mt-6 flex flex-col gap-3">
+              <div className="w-full max-w-md mx-auto bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3 mb-1">
+                <p className="text-yellow-300 text-sm text-center font-medium">
+                  <span className="inline-flex items-center justify-center">
+                    <svg
+                      className="w-5 h-5 mr-2"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                        clipRule="evenodd"
+                      ></path>
+                    </svg>
+                    Cam kết hoàn tiền 100% trong 7 ngày nếu không hài lòng
+                  </span>
+                </p>
+              </div>
+
+              <div className="flex flex-wrap justify-center gap-3 mb-4">
+                <div className="bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full flex items-center">
+                  <svg
+                    className="w-4 h-4 mr-1 text-blue-300"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                      clipRule="evenodd"
+                    ></path>
+                  </svg>
+                  <span className="text-xs text-gray-300">
+                    Thanh toán an toàn
+                  </span>
+                </div>
+                <div className="bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full flex items-center">
+                  <svg
+                    className="w-4 h-4 mr-1 text-blue-300"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M11 17a1 1 0 001.447.894l4-2A1 1 0 0017 15V9.236a1 1 0 00-1.447-.894l-4 2a1 1 0 00-.553.894V17zM15.211 6.276a1 1 0 000-1.788l-4.764-2.382a1 1 0 00-.894 0L4.789 4.488a1 1 0 000 1.788l4.764 2.382a1 1 0 00.894 0l4.764-2.382zM4.447 8.342A1 1 0 003 9.236V15a1 1 0 00.553.894l4 2A1 1 0 009 17v-5.764a1 1 0 00-.553-.894l-4-2z"></path>
+                  </svg>
+                  <span className="text-xs text-gray-300">
+                    Tài liệu học tập đầy đủ
+                  </span>
+                </div>
+                <div className="bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full flex items-center">
+                  <svg
+                    className="w-4 h-4 mr-1 text-blue-300"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"></path>
+                  </svg>
+                  <span className="text-xs text-gray-300">
+                    Hỗ trợ 1-1 trọn đời
+                  </span>
+                </div>
+              </div>
+
+              <p className="text-sm text-red-300">
+                * Ưu đãi sẽ kết thúc ngay khi hết slot hoặc hết thời gian
+              </p>
+              <p className="text-sm text-gray-300">
+                * Học phí sẽ tăng lên 2.999.999₫ cho đợt tuyển sinh kế tiếp
+              </p>
+            </div>
           </div>
-          <div className="bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full flex items-center">
-            <svg className="w-4 h-4 mr-1 text-blue-300" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-              <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"></path>
-            </svg>
-            <span className="text-xs text-gray-300">Hỗ trợ 1-1 trọn đời</span>
-          </div>
-        </div>
-        
-        <p className="text-sm text-red-300">
-          * Ưu đãi sẽ kết thúc ngay khi hết slot hoặc hết thời gian
-        </p>
-        <p className="text-sm text-gray-300">
-          * Học phí sẽ tăng lên 2.999.999₫ cho đợt tuyển sinh kế tiếp
-        </p>
-      </div>
-    </div>
-  </motion.div>
-</section>
+        </motion.div>
+      </section>
+
+      {/* Modal QR code thanh toán */}
+      <QRPaymentModal
+        isOpen={showQRModal}
+        onClose={() => setShowQRModal(false)}
+        price={coursePrice}
+      />
     </main>
   );
 }

@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 
 const isStudentRoute = createRouteMatcher(["/user/(.*)"]);
 const isTeacherRoute = createRouteMatcher(["/teacher/(.*)"]);
+const isAdminRoute = createRouteMatcher(["/admin/(.*)"]);
 
 export default clerkMiddleware(async (auth, req) => {
   const { sessionClaims } = await auth();
@@ -19,6 +20,15 @@ export default clerkMiddleware(async (auth, req) => {
 
   if (isTeacherRoute(req)) {
     if (userRole !== "teacher") {
+      const url = new URL("/user/courses", req.url);
+      return NextResponse.redirect(url);
+    }
+  }
+  
+  // Chỉ cho phép giáo viên truy cập vào trang admin
+  if (isAdminRoute(req)) {
+    if (userRole !== "teacher") {
+      // Chuyển hướng học viên về trang khóa học
       const url = new URL("/user/courses", req.url);
       return NextResponse.redirect(url);
     }

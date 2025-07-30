@@ -231,8 +231,10 @@ export const sepayWebhook = async (
     // SePay sẽ gửi nội dung chuyển khoản trong field 'content' hoặc 'description'
     const content = webhookData.content || webhookData.description || "";
     
-    // Tìm mã CWS + 6 chữ số trong nội dung
-    const orderCodeMatch = content.match(/CWS\d{6}/);
+    // Tìm mã đơn hàng trong nội dung
+    // Hỗ trợ cả CWS (khóa học) và CWS11 (mentoring)
+    const orderCodeRegex = /(CWS11\d{6}|CWS\d{6})/;
+    const orderCodeMatch = content.match(orderCodeRegex);
     const orderCode = orderCodeMatch ? orderCodeMatch[0] : null;
     
     if (!orderCode) {
@@ -277,88 +279,117 @@ export const sepayWebhook = async (
       processedAt: new Date().toISOString()
     };
     
-    // Tìm thông tin khóa học
-    console.log(`Lấy thông tin khóa học: ${transaction.courseId}`);
-    const course = await Course.get(transaction.courseId);
-    
-    if (!course) {
-      console.error(`Không tìm thấy khóa học với ID: ${transaction.courseId}`);
-      res.status(400).json({ message: `Course with ID ${transaction.courseId} not found` });
-      return;
-    }
-    
-    try {
-      // Kiểm tra xem người dùng đã có course progress cho khóa học này chưa
-      const existingProgress = await UserCourseProgress.query("userId")
-        .eq(transaction.userId)
-        .where("courseId")
-        .eq(transaction.courseId)
-        .exec();
+    // Kiểm tra xem đây là mentoring hay khóa học thông thường
+    const isMentoring = transaction.courseId === "mentoring-1-1";
+    console.log(`Loại thanh toán: ${isMentoring ? "Mentoring 1-1" : "Khóa học thông thường"}`);
+
+    // Xử lý khác nhau dựa trên loại thanh toán
+    if (isMentoring) {
+      // Đây là thanh toán mentoring 1-1
+      console.log(`Cập nhật trạng thái đơn hàng mentoring: ${transaction.orderCode}`);
       
-      if (existingProgress && existingProgress.length > 0) {
-        console.log(`User ${transaction.userId} đã có progress cho khóa học ${transaction.courseId}, không tạo mới`);
-      } else {
-        // Tạo course progress mới
-        console.log(`Tạo course progress cho user ${transaction.userId} và khóa học ${transaction.courseId}`);
-        const initialProgress = new UserCourseProgress({
-          userId: transaction.userId,
-          courseId: transaction.courseId,
-          enrollmentDate: new Date().toISOString(),
-          overallProgress: 0,
-          sections: course.sections.map((section: any) => ({
-            sectionId: section.sectionId,
-            chapters: section.chapters.map((chapter: any) => ({
-              chapterId: chapter.chapterId,
-              completed: false,
+      // Không cần xử lý thêm về enrollment hay progress vì mentoring không có khái niệm này
+      console.log(`Thanh toán mentoring thành công - Thông tin người đăng ký:`, transaction.mentoringDetails);
+      
+    } else {
+      // Đây là thanh toán khóa học thông thường
+      console.log(`Lấy thông tin khóa học: ${transaction.courseId}`);
+      const course = await Course.get(transaction.courseId);
+      
+      if (!course) {
+        console.error(`Không tìm thấy khóa học với ID: ${transaction.courseId}`);
+        res.status(400).json({ message: `Course with ID ${transaction.courseId} not found` });
+        return;
+      }
+      
+      try {
+        // Kiểm tra xem người dùng đã có course progress cho khóa học này chưa
+        const existingProgress = await UserCourseProgress.query("userId")
+          .eq(transaction.userId)
+          .where("courseId")
+          .eq(transaction.courseId)
+          .exec();
+        
+        if (existingProgress && existingProgress.length > 0) {
+          console.log(`User ${transaction.userId} đã có progress cho khóa học ${transaction.courseId}, không tạo mới`);
+        } else {
+          // Tạo course progress mới
+          console.log(`Tạo course progress cho user ${transaction.userId} và khóa học ${transaction.courseId}`);
+          const initialProgress = new UserCourseProgress({
+            userId: transaction.userId,
+            courseId: transaction.courseId,
+            enrollmentDate: new Date().toISOString(),
+            overallProgress: 0,
+            sections: course.sections.map((section: any) => ({
+              sectionId: section.sectionId,
+              chapters: section.chapters.map((chapter: any) => ({
+                chapterId: chapter.chapterId,
+                completed: false,
+              })),
             })),
-          })),
-          lastAccessedTimestamp: new Date().toISOString(),
-        });
+            lastAccessedTimestamp: new Date().toISOString(),
+          });
+          
+          await initialProgress.save();
+          console.log("Course progress đã được tạo");
+        }
         
-        await initialProgress.save();
-        console.log("Course progress đã được tạo");
-      }
-      
-      // Kiểm tra xem người dùng đã được enrollment vào khóa học chưa
-      const courseDetails = await Course.get(transaction.courseId);
-      const isAlreadyEnrolled = courseDetails.enrollments && 
-        courseDetails.enrollments.some((enrollment: any) => enrollment.userId === transaction.userId);
-      
-      if (isAlreadyEnrolled) {
-        console.log(`User ${transaction.userId} đã được enrollment vào khóa học ${transaction.courseId}`);
-      } else {
-        // Thêm enrollment vào khóa học
-        console.log(`Thêm enrollment cho user ${transaction.userId} vào khóa học ${transaction.courseId}`);
-        await Course.update(
-          { courseId: transaction.courseId },
-          {
-            $ADD: {
-              enrollments: [{ userId: transaction.userId }],
-            },
-          }
-        );
+        // Kiểm tra xem người dùng đã được enrollment vào khóa học chưa
+        const courseDetails = await Course.get(transaction.courseId);
+        const isAlreadyEnrolled = courseDetails.enrollments && 
+          courseDetails.enrollments.some((enrollment: any) => enrollment.userId === transaction.userId);
         
-        console.log(`Enrollment thành công cho user ${transaction.userId} vào khóa học ${transaction.courseId}`);
+        if (isAlreadyEnrolled) {
+          console.log(`User ${transaction.userId} đã được enrollment vào khóa học ${transaction.courseId}`);
+        } else {
+          // Thêm enrollment vào khóa học
+          console.log(`Thêm enrollment cho user ${transaction.userId} vào khóa học ${transaction.courseId}`);
+          await Course.update(
+            { courseId: transaction.courseId },
+            {
+              $ADD: {
+                enrollments: [{ userId: transaction.userId }],
+              },
+            }
+          );
+          
+          console.log(`Enrollment thành công cho user ${transaction.userId} vào khóa học ${transaction.courseId}`);
+        }
+      } catch (enrollmentError) {
+        console.error("Lỗi khi xử lý enrollment:", enrollmentError);
+        // Vẫn cập nhật trạng thái thanh toán thành công, xử lý enrollment sau nếu cần
       }
-    } catch (enrollmentError) {
-      console.error("Lỗi khi xử lý enrollment:", enrollmentError);
-      // Vẫn cập nhật trạng thái thanh toán thành công, xử lý enrollment sau nếu cần
     }
     
     // Lưu cập nhật transaction
     await transaction.save();
     console.log(`Transaction ${orderCode} đã được cập nhật thành công`);
     
-    // Trả về kết quả thành công
-    res.json({ 
-      message: "Order status updated successfully",
-      data: {
-        orderCode,
-        status: transaction.status,
-        courseId: transaction.courseId,
-        userId: transaction.userId
-      }
-    });
+    // Trả về kết quả thành công với thông tin phù hợp theo loại thanh toán
+    if (transaction.courseId === "mentoring-1-1") {
+      res.json({ 
+        message: "Order status updated successfully",
+        data: {
+          orderCode,
+          status: transaction.status,
+          type: "mentoring",
+          courseId: transaction.courseId,
+          userId: transaction.userId,
+          mentoringDetails: transaction.mentoringDetails
+        }
+      });
+    } else {
+      res.json({ 
+        message: "Order status updated successfully",
+        data: {
+          orderCode,
+          status: transaction.status,
+          type: "course",
+          courseId: transaction.courseId,
+          userId: transaction.userId
+        }
+      });
+    }
   } catch (error) {
     console.error("Error in webhook:", error);
     res.status(500).json({ message: "Error in webhook", error });
