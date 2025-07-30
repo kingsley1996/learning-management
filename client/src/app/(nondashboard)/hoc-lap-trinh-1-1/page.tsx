@@ -724,7 +724,7 @@ export default function Page() {
               </li>
               <li className="flex h-10 items-center justify-center rounded border border-indigo-500/30 bg-gradient-to-b from-indigo-500/10 to-indigo-500/20 px-5 text-center text-sm font-medium text-indigo-200 hover:border-indigo-400/40 hover:from-indigo-500/20 hover:to-indigo-500/30 transition-all duration-200 sm:h-12 sm:px-7 sm:text-lg">
                 TypeScript
-              </li>vui long
+              </li>
               <li className="flex h-10 items-center justify-center rounded border border-cyan-500/30 bg-gradient-to-b from-cyan-500/10 to-cyan-500/20 px-5 text-center text-sm font-medium text-cyan-200 hover:border-cyan-400/40 hover:from-cyan-500/20 hover:to-cyan-500/30 transition-all duration-200 sm:h-12 sm:px-7 sm:text-lg">
                 TailwindCSS
               </li>
