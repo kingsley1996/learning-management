@@ -1,0 +1,182 @@
+/* Landing Page Performance Optimizations */
+
+/* Reduce animation complexity for better performance */
+@media (prefers-reduced-motion: reduce) {
+  .animate-pulse {
+    animation: none;
+  }
+
+  .motion-reduce\:transition-none {
+    transition: none !important;
+  }
+}
+
+/* Optimize skeleton animations */
+.skeleton-optimized {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.1) 25%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.1) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Optimize SVG rendering */
+.optimized-svg {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Reduce layout shifts */
+.landing-section {
+  contain: layout style paint;
+  min-height: 100vh;
+}
+
+/* Optimize image loading */
+.landing-image {
+  loading: lazy;
+  decoding: async;
+}
+
+/* Reduce paint complexity */
+.landing-card {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* Optimize backdrop blur for better performance */
+.landing-backdrop {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Reduce animation frame drops */
+.landing-animation {
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Optimize text rendering */
+.landing-text {
+  text-rendering: optimizeSpeed;
+  font-feature-settings: "liga" 0;
+}
+
+/* Reduce repaints during scroll */
+.landing-scroll {
+  will-change: scroll-position;
+}
+
+/* Optimize grid layouts */
+.landing-grid {
+  contain: layout;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+/* Reduce memory usage for large lists */
+.landing-list {
+  contain: layout style;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+/* Optimize hover effects */
+.landing-hover {
+  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+}
+
+.landing-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Optimize focus states */
+.landing-focus:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Reduce animation complexity for mobile */
+@media (max-width: 768px) {
+  .landing-animation {
+    animation-duration: 0.3s;
+  }
+
+  .skeleton-optimized {
+    animation-duration: 1s;
+  }
+}
+
+/* Optimize for high DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .landing-image {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Optimize critical rendering path */
+.landing-critical {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 500px;
+}
+
+/* Reduce layout thrashing */
+.landing-stable {
+  contain: layout style;
+  min-height: 200px;
+}
+
+/* Optimize for slow devices */
+@media (max-width: 480px) {
+  .landing-section {
+    min-height: 50vh;
+  }
+
+  .landing-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Optimize for fast devices */
+@media (min-width: 1200px) {
+  .landing-section {
+    min-height: 80vh;
+  }
+}
+
+/* Reduce animation complexity for better battery life */
+@media (prefers-reduced-motion: reduce) {
+  .landing-hover:hover {
+    transform: none;
+  }
+
+  .landing-animation {
+    animation: none;
+  }
+}

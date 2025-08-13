@@ -254,9 +254,7 @@ const QRPaymentModal = ({
 
       switch (orderStatus.status) {
         case "success":
-          toast.success(
-            "Thanh toán thành công! Mình sẽ liên hệ với bạn sớm."
-          );
+          toast.success("Thanh toán thành công! Mình sẽ liên hệ với bạn sớm.");
           setPolling(false);
           setPaymentSuccess(true); // Đánh dấu thanh toán thành công
           break;
@@ -318,8 +316,8 @@ const QRPaymentModal = ({
         {!showQR ? (
           <>
             <p className="text-gray-300 mb-6">
-              Vui lòng cung cấp thông tin để mình có thể liên hệ với bạn
-              sau khi thanh toán
+              Vui lòng cung cấp thông tin để mình có thể liên hệ với bạn sau khi
+              thanh toán
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -555,27 +553,38 @@ const QRPaymentModal = ({
                   <div className="bg-gray-800/50 p-6 rounded-lg w-full max-w-md text-center">
                     <div className="flex justify-center mb-4">
                       <div className="h-16 w-16 rounded-full bg-green-500/20 flex items-center justify-center">
-                        <svg 
-                          className="h-8 w-8 text-green-500" 
-                          fill="none" 
-                          viewBox="0 0 24 24" 
+                        <svg
+                          className="h-8 w-8 text-green-500"
+                          fill="none"
+                          viewBox="0 0 24 24"
                           stroke="currentColor"
                         >
-                          <path 
-                            strokeLinecap="round" 
-                            strokeLinejoin="round" 
-                            strokeWidth={2} 
-                            d="M5 13l4 4L19 7" 
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M5 13l4 4L19 7"
                           />
                         </svg>
                       </div>
                     </div>
-                    <h3 className="text-xl font-semibold text-green-400 mb-2">Thanh Toán Thành Công!</h3>
-                    <p className="text-white mb-2">Mã đơn hàng: <span className="font-medium">{order.orderCode}</span></p>
-                    <p className="text-white mb-4">Số tiền: <span className="font-medium text-green-400">{order.amount?.toLocaleString()} VND</span></p>
+                    <h3 className="text-xl font-semibold text-green-400 mb-2">
+                      Thanh Toán Thành Công!
+                    </h3>
+                    <p className="text-white mb-2">
+                      Mã đơn hàng:{" "}
+                      <span className="font-medium">{order.orderCode}</span>
+                    </p>
+                    <p className="text-white mb-4">
+                      Số tiền:{" "}
+                      <span className="font-medium text-green-400">
+                        {order.amount?.toLocaleString()} VND
+                      </span>
+                    </p>
                     <div className="bg-gray-700/30 p-4 rounded-lg mb-4">
                       <p className="text-gray-200">
-                        Mình đã nhận được thông tin đăng ký của bạn và sẽ liên hệ với bạn trong vòng 24h tới để xác nhận lịch học.
+                        Mình đã nhận được thông tin đăng ký của bạn và sẽ liên
+                        hệ với bạn trong vòng 24h tới để xác nhận lịch học.
                       </p>
                     </div>
                   </div>
@@ -598,8 +607,8 @@ const QRPaymentModal = ({
               <button
                 onClick={handleClose}
                 className={`px-4 py-2 ${
-                  paymentSuccess 
-                    ? "bg-gradient-to-r from-green-600 to-emerald-700 hover:from-green-700 hover:to-emerald-800" 
+                  paymentSuccess
+                    ? "bg-gradient-to-r from-green-600 to-emerald-700 hover:from-green-700 hover:to-emerald-800"
                     : "bg-gray-700 hover:bg-gray-600"
                 } text-white rounded-lg transition-colors`}
               >
@@ -1872,7 +1881,7 @@ export default function Page() {
               <SlotProgressBar />
             </div>
 
-            <CountdownTimer targetDate={new Date("2025-08-01")} />
+            <CountdownTimer targetDate={new Date("2025-08-30")} />
 
             <ul className="mb-8 space-y-3">
               <li className="flex items-center justify-center text-gray-300">
