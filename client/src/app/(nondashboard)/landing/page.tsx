@@ -1,10 +1,11 @@
 "use client";
 
 import React, { Suspense } from "react";
-import { useGetCoursesQuery } from "@/state/api";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
+import ErrorBoundary from "@/components/ErrorBoundary";
+import { useCoursesOptimized } from "@/hooks/useCoursesOptimized";
 
 // Dynamic imports for performance optimization
 const CountdownTimer = dynamic(() => import("@/components/CountdownTimer"), {
@@ -26,71 +27,41 @@ const StudentFeedbackSection = React.lazy(
   () => import("./StudentFeedbackSection")
 );
 
-// Optimized skeleton components
-const SkeletonCard = () => (
-  <div className="h-[400px] bg-[#ffffff3f] bg-opacity-20 rounded-lg animate-pulse border border-[#ffffff1d] backdrop-blur p-4">
-    <div className="h-52 bg-gray-700/50 rounded-lg mb-4" />
-    <div className="space-y-4">
-      <div className="h-6 bg-gray-700/50 rounded-lg w-3/4" />
-      <div className="h-4 bg-gray-700/50 rounded-lg w-1/2" />
-      <div className="flex gap-2 mt-4">
-        <div className="h-8 w-8 bg-gray-700/50 rounded-full" />
-        <div className="h-8 w-8 bg-gray-700/50 rounded-full" />
-        <div className="h-8 w-8 bg-gray-700/50 rounded-full" />
-      </div>
-    </div>
-  </div>
-);
-
-const LoadingUI = () => (
-  <div className="w-full min-h-screen">
-    {/* Hero section skeleton */}
-    <div className="relative pt-20 pb-16 md:pt-28 md:pb-24">
-      <div className="container mx-auto px-4">
-        <div className="flex flex-col items-center space-y-8 text-center">
-          <div className="w-3/4 h-12 bg-[#ffffff3f] bg-opacity-20 rounded-lg animate-pulse" />
-          <div className="w-2/3 h-8 bg-[#ffffff3f] bg-opacity-20 rounded-lg animate-pulse" />
-          <div className="w-1/2 h-16 bg-[#ffffff3f] bg-opacity-20 rounded-lg animate-pulse mt-8" />
-          <div className="w-full md:w-3/4 h-[300px] bg-[#ffffff3f] bg-opacity-20 rounded-lg animate-pulse mt-8" />
+// Optimized skeleton components - chỉ cho courses section
+const CoursesSkeleton = () => (
+  <div className="w-[95%] md:w-[85%] m-auto py-16">
+    <div className="w-1/3 h-10 bg-[#ffffff3f] bg-opacity-20 rounded-lg animate-pulse mb-12 mx-auto" />
+    <div className="grid grid-cols-1 gap-[20px] md:grid-cols-2 md:gap-[25px] lg:grid-cols-3 lg:gap-[25px] xl:grid-cols-3 xl:gap-[35px] mb-12 border-0 md:pl-5">
+      {[...Array(4)].map((_, i) => (
+        <div
+          key={i}
+          className="h-[400px] bg-[#ffffff3f] bg-opacity-20 rounded-lg animate-pulse border border-[#ffffff1d] backdrop-blur p-4"
+        >
+          <div className="h-52 bg-gray-700/50 rounded-lg mb-4" />
+          <div className="space-y-4">
+            <div className="h-6 bg-gray-700/50 rounded-lg w-3/4" />
+            <div className="h-4 bg-gray-700/50 rounded-lg w-1/2" />
+            <div className="flex gap-2 mt-4">
+              <div className="h-8 w-8 bg-gray-700/50 rounded-full" />
+              <div className="h-8 w-8 bg-gray-700/50 rounded-full" />
+              <div className="h-8 w-8 bg-gray-700/50 rounded-full" />
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-
-    {/* Featured courses skeleton */}
-    <div className="container mx-auto px-4 py-16">
-      <div className="w-1/3 h-10 bg-[#ffffff3f] bg-opacity-20 rounded-lg animate-pulse mb-12 mx-auto" />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {[...Array(6)].map((_, i) => (
-          <SkeletonCard key={i} />
-        ))}
-      </div>
+      ))}
     </div>
   </div>
 );
 
 const Landing = () => {
   const router = useRouter();
-  const { data: courses = [], isLoading, isError } = useGetCoursesQuery({});
-
-  // Show skeleton only for initial load, not for data updates
-  const [isInitialLoad, setIsInitialLoad] = React.useState(true);
-
-  React.useEffect(() => {
-    if (!isLoading) {
-      setIsInitialLoad(false);
-    }
-  }, [isLoading]);
+  const { topCourses, isLoading, isError } = useCoursesOptimized();
 
   const handleCourseClick = (courseId: string) => {
     router.push(`/search?id=${courseId}`, {
       scroll: false,
     });
   };
-
-  // Show skeleton only on initial load
-  if (isInitialLoad && isLoading) {
-    return <LoadingUI />;
-  }
 
   return (
     <motion.div
@@ -100,33 +71,43 @@ const Landing = () => {
       className="landing"
     >
       {/* Hero Section - Load immediately */}
-      <Suspense fallback={<div className="h-screen" />}>
-        <HeroSection />
-      </Suspense>
+      <ErrorBoundary>
+        <Suspense fallback={<div className="h-screen" />}>
+          <HeroSection />
+        </Suspense>
+      </ErrorBoundary>
 
       {/* Preview Section - Lazy load */}
-      <Suspense fallback={<div className="h-96" />}>
-        <PreviewSection />
-      </Suspense>
+      <ErrorBoundary>
+        <Suspense fallback={<div className="h-96" />}>
+          <PreviewSection />
+        </Suspense>
+      </ErrorBoundary>
 
       {/* Trusted Section - Lazy load */}
-      <Suspense fallback={<div className="h-32" />}>
-        <TrustedSection />
-      </Suspense>
+      <ErrorBoundary>
+        <Suspense fallback={<div className="h-32" />}>
+          <TrustedSection />
+        </Suspense>
+      </ErrorBoundary>
 
-      {/* Popular Courses Section - Lazy load */}
-      <Suspense fallback={<div className="h-96" />}>
-        <PopularCoursesSection
-          courses={courses}
-          handleCourseClick={handleCourseClick}
-          isLoading={isLoading}
-        />
-      </Suspense>
+      {/* Popular Courses Section - Lazy load với skeleton riêng biệt */}
+      <ErrorBoundary>
+        <Suspense fallback={<CoursesSkeleton />}>
+          <PopularCoursesSection
+            courses={topCourses}
+            handleCourseClick={handleCourseClick}
+            isLoading={isLoading}
+          />
+        </Suspense>
+      </ErrorBoundary>
 
       {/* Student Feedback Section - Lazy load */}
-      <Suspense fallback={<div className="h-96" />}>
-        <StudentFeedbackSection />
-      </Suspense>
+      <ErrorBoundary>
+        <Suspense fallback={<div className="h-96" />}>
+          <StudentFeedbackSection />
+        </Suspense>
+      </ErrorBoundary>
     </motion.div>
   );
 };
