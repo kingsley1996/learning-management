@@ -15,10 +15,6 @@ export const useCoursesOptimized = (category?: string) => {
 
     // Sắp xếp courses theo popularity hoặc rating nếu có
     return [...courses].sort((a, b) => {
-      // Ưu tiên courses có rating cao hơn
-      if (a.rating && b.rating) {
-        return b.rating - a.rating;
-      }
       // Nếu không có rating, giữ nguyên thứ tự
       return 0;
     });
