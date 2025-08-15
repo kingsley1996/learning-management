@@ -20,8 +20,8 @@ const Navbar = ({ isCoursePage }: { isCoursePage: boolean }) => {
             <SidebarTrigger className="dashboard-navbar__sidebar-trigger" />
           </div>
 
-          <div className="flex items-center gap-4">
-            <div className="relative group">
+          <div className="flex items-center gap-2 sm:gap-4 flex-1 max-w-md">
+            <div className="relative group w-full">
               <Link
                 href="/search"
                 className={cn("dashboard-navbar__search-input", {
@@ -38,9 +38,9 @@ const Navbar = ({ isCoursePage }: { isCoursePage: boolean }) => {
         </div>
 
         <div className="dashboard-navbar__actions">
-          <button className="nondashboard-navbar__notification-button">
-            <span className="nondashboard-navbar__notification-indicator"></span>
-            <Bell className="nondashboard-navbar__notification-icon" />
+          <button className="dashboard-navbar__notification-button">
+            <span className="dashboard-navbar__notification-indicator"></span>
+            <Bell className="dashboard-navbar__notification-icon" />
           </button>
 
           <UserButton
@@ -48,7 +48,7 @@ const Navbar = ({ isCoursePage }: { isCoursePage: boolean }) => {
               baseTheme: dark,
               elements: {
                 userButtonOuterIdentifier: "text-customgreys-dirtyGrey",
-                userButtonBox: "scale-90 sm:scale-100",
+                userButtonBox: "scale-75 sm:scale-90 md:scale-100",
               },
             }}
             showName={false}

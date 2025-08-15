@@ -677,7 +677,7 @@ input[type="color"] {
 }
 
 .course__instructor-name {
-  @apply text-customgreys-dirtyGrey text-sm font-[500];
+  @apply text-customgreys-dirtyGrey text-sm font-medium;
 }
 
 .course__navigation {
@@ -1277,53 +1277,182 @@ input[type="color"] {
   @apply bg-customgreys-dirtyGrey;
 }
 
-/* NonDashboard Navbar */
-/* .nondashboard-navbar {
-  @apply w-full flex justify-center bg-customgreys-primarybg;
-} */
-
-.nondashboard-navbar__container {
-  @apply flex justify-between items-center w-3/4 py-8;
+/* NonDashboard Navbar - Improved Responsive Design */
+.nondashboard-navbar {
+  @apply sticky top-0 inset-x-0 backdrop-blur-lg backdrop-saturate-150 w-full border-b border-[#ffffff1c] z-[999] shadow;
 }
 
-.nondashboard-navbar__search {
-  @apply flex justify-between items-center;
+.nondashboard-navbar__header {
+  @apply z-40 flex px-4 sm:px-6 w-full relative items-center justify-center min-h-[4rem] max-w-full;
+}
+
+.nondashboard-navbar__container {
+  @apply w-[95%] md:w-[90%] 2xl:w-[85%] mx-auto flex items-center justify-between h-16;
+}
+
+/* Logo Section */
+.nondashboard-navbar__logo {
+  @apply flex-shrink-0 z-[91];
 }
 
 .nondashboard-navbar__brand {
-  @apply font-bold text-lg sm:text-xl hover:text-customgreys-dirtyGrey;
+  @apply text-[18px] sm:text-[20px] md:text-[25px] font-medium hover:text-customgreys-dirtyGrey transition-colors duration-200;
 }
 
-.nondashboard-navbar__search-input {
-  @apply bg-customgreys-secondarybg pl-10 sm:pl-14 pr-6 sm:pr-20 py-3 sm:py-4 rounded-xl text-customgreys-dirtyGrey hover:text-white-50 hover:bg-customgreys-darkerGrey transition-all duration-300 text-sm sm:text-base;
+/* Desktop Navigation */
+.nondashboard-navbar__desktop-nav {
+  @apply hidden md:flex flex-1 justify-center;
 }
 
-.nondashboard-navbar__search-icon {
-  @apply absolute left-3 sm:left-5 top-1/2 transform -translate-y-1/2 text-customgreys-dirtyGrey transition-all duration-300;
+.nondashboard-navbar__nav {
+  @apply flex items-center space-x-2 lg:space-x-5;
 }
 
-.nondashboard-navbar__actions {
-  @apply flex items-center gap-2 sm:gap-4;
+.nondashboard-navbar__nav-link {
+  @apply px-3 lg:px-5 py-2 text-[16px] lg:text-[18px] font-medium text-white-50 hover:text-customgreys-dirtyGrey transition-colors duration-200 rounded-md hover:bg-white-50/5;
 }
 
-.nondashboard-navbar__notification-button {
-  @apply relative w-7 h-7 sm:w-8 sm:h-8 bg-gray-800 rounded-full flex items-center justify-center;
+/* Desktop Auth Section */
+.nondashboard-navbar__desktop-auth {
+  @apply hidden md:flex items-center;
 }
 
-.nondashboard-navbar__notification-indicator {
-  @apply absolute top-0 right-0 bg-blue-500 h-1.5 sm:h-2 w-1.5 sm:w-2 rounded-full;
+.nondashboard-navbar__auth-buttons {
+  @apply flex items-center gap-2 lg:gap-4;
 }
 
-.nondashboard-navbar__notification-icon {
-  @apply text-gray-400 w-4 h-4 sm:w-5 sm:h-5;
+/* Mobile Menu Button */
+.nondashboard-navbar__mobile-menu-button {
+  @apply md:hidden flex items-center;
 }
 
+.nondashboard-navbar__menu-toggle {
+  @apply p-2 text-white-50 hover:text-customgreys-dirtyGrey hover:bg-white-50/5 rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900;
+}
+
+/* Mobile Menu */
+.nondashboard-navbar__mobile-menu {
+  @apply md:hidden absolute top-full left-0 w-full bg-customgreys-primarybg border-b border-[#ffffff1c] transform transition-all duration-300 ease-in-out origin-top;
+  transform: scaleY(0);
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+}
+
+.nondashboard-navbar__mobile-menu--open {
+  transform: scaleY(1);
+  opacity: 1;
+  max-height: 100vh;
+}
+
+.nondashboard-navbar__mobile-menu-content {
+  @apply px-4 py-6 space-y-6;
+}
+
+/* Mobile Navigation Links */
+.nondashboard-navbar__mobile-nav {
+  @apply space-y-3;
+}
+
+.nondashboard-navbar__mobile-nav-link {
+  @apply block px-4 py-3 text-[16px] font-medium text-white-50 hover:text-customgreys-dirtyGrey hover:bg-white-50/5 rounded-md transition-all duration-200;
+}
+
+/* Mobile Auth Section */
+.nondashboard-navbar__mobile-auth {
+  @apply pt-4 border-t border-[#ffffff1c];
+}
+
+.nondashboard-navbar__mobile-user {
+  @apply flex items-center justify-center py-2;
+}
+
+.nondashboard-navbar__mobile-auth-buttons {
+  @apply flex flex-col space-y-3;
+}
+
+.nondashboard-navbar__mobile-auth-button--login,
+.nondashboard-navbar__mobile-auth-button--signup {
+  @apply block w-full text-center py-3 px-4 rounded-md font-medium transition-all duration-200;
+}
+
+.nondashboard-navbar__mobile-auth-button--login {
+  @apply text-customgreys-dirtyGrey bg-transparent border border-customgreys-dirtyGrey hover:bg-customgreys-darkerGrey hover:text-white-50;
+}
+
+.nondashboard-navbar__mobile-auth-button--signup {
+  @apply text-white-50 bg-indigo-600 hover:bg-primary-600;
+}
+
+/* Mobile Menu Overlay */
+.nondashboard-navbar__overlay {
+  @apply md:hidden fixed inset-0 bg-black bg-opacity-50 z-[998];
+}
+
+/* Legacy Auth Buttons for Desktop */
 .nondashboard-navbar__auth-button--login {
-  @apply text-customgreys-dirtyGrey hover:bg-customgreys-darkerGrey hover:text-white-50 px-3 sm:px-4 py-1.5 sm:py-2 rounded-md border-customgreys-dirtyGrey border-[1px] text-sm sm:text-base;
+  @apply text-customgreys-dirtyGrey hover:bg-customgreys-darkerGrey hover:text-white-50 px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 rounded-md border-customgreys-dirtyGrey border-[1px] text-xs sm:text-sm lg:text-base transition-all duration-200;
 }
 
 .nondashboard-navbar__auth-button--signup {
-  @apply bg-indigo-600 px-3 sm:px-4 py-1.5 sm:py-2 rounded-md hover:bg-primary-600 hover:text-customgreys-primarybg text-sm sm:text-base;
+  @apply bg-indigo-600 px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 rounded-md hover:bg-primary-600 hover:text-customgreys-primarybg text-xs sm:text-sm lg:text-base transition-all duration-200;
+}
+
+/* Responsive Improvements */
+@media (max-width: 374px) {
+  .nondashboard-navbar__brand {
+    @apply text-[16px];
+  }
+  
+  .nondashboard-navbar__auth-button--login,
+  .nondashboard-navbar__auth-button--signup {
+    @apply px-2 py-1 text-xs;
+  }
+}
+
+@media (min-width: 375px) and (max-width: 639px) {
+  .nondashboard-navbar__container {
+    @apply px-2;
+  }
+}
+
+/* Animation for mobile menu items */
+.nondashboard-navbar__mobile-nav-link {
+  animation: slideInFromTop 0.3s ease-out forwards;
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.nondashboard-navbar__mobile-menu--open .nondashboard-navbar__mobile-nav-link {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.nondashboard-navbar__mobile-menu--open .nondashboard-navbar__mobile-nav-link:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.nondashboard-navbar__mobile-menu--open .nondashboard-navbar__mobile-nav-link:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.nondashboard-navbar__mobile-menu--open .nondashboard-navbar__mobile-nav-link:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.nondashboard-navbar__mobile-menu--open .nondashboard-navbar__mobile-nav-link:nth-child(4) {
+  animation-delay: 0.25s;
+}
+
+@keyframes slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Add these classes for group hover effects */
@@ -1572,41 +1701,45 @@ input[type="color"] {
   @apply brightness-75;
 }
 
-/* Dashboard Navbar */
+/* Dashboard Navbar - Improved Responsive Design */
 .dashboard-navbar {
-  @apply w-full mb-6 px-4 sm:px-8 pt-7 z-10;
+  @apply w-full mb-4 sm:mb-6 px-3 sm:px-4 lg:px-8 pt-4 sm:pt-7 z-10;
 }
 
 .dashboard-navbar__container {
-  @apply flex justify-between items-center w-full my-3;
+  @apply flex justify-between items-center w-full my-2 sm:my-3 gap-4;
 }
 
 .dashboard-navbar__search {
-  @apply flex justify-between items-center gap-2 sm:gap-5;
+  @apply flex items-center gap-2 sm:gap-5 flex-1;
 }
 
 .dashboard-navbar__search-input {
-  @apply bg-customgreys-primarybg pl-10 sm:pl-14 pr-6 sm:pr-20 py-3 sm:py-4 rounded-xl text-customgreys-dirtyGrey hover:text-white-50 hover:bg-customgreys-darkerGrey transition-all duration-300 text-sm sm:text-base;
+  @apply bg-customgreys-primarybg pl-8 sm:pl-10 lg:pl-14 pr-4 sm:pr-6 lg:pr-20 py-2 sm:py-3 lg:py-4 rounded-xl text-customgreys-dirtyGrey hover:text-white-50 hover:bg-customgreys-darkerGrey transition-all duration-300 text-xs sm:text-sm lg:text-base w-full;
 }
 
 .dashboard-navbar__search-icon {
-  @apply absolute left-3 sm:left-5 top-1/2 transform -translate-y-1/2 text-customgreys-dirtyGrey transition-all duration-300;
+  @apply absolute left-2 sm:left-3 lg:left-5 top-1/2 transform -translate-y-1/2 text-customgreys-dirtyGrey transition-all duration-300;
 }
 
 .dashboard-navbar__actions {
-  @apply flex items-center gap-3 sm:gap-6;
+  @apply flex items-center gap-2 sm:gap-3 lg:gap-6 flex-shrink-0;
 }
 
-.dashboard-navbar__dark-mode-button {
-  @apply rounded-full flex items-center justify-center;
+.dashboard-navbar__notification-button {
+  @apply relative w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-700 transition-colors duration-200;
 }
 
-.dashboard-navbar__dark-mode-icon {
-  @apply cursor-pointer text-customgreys-dirtyGrey w-5 h-5 sm:w-6 sm:h-6 hover:text-white-50;
+.dashboard-navbar__notification-indicator {
+  @apply absolute top-0 right-0 bg-blue-500 h-1 sm:h-1.5 lg:h-2 w-1 sm:w-1.5 lg:w-2 rounded-full;
+}
+
+.dashboard-navbar__notification-icon {
+  @apply text-gray-400 w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5;
 }
 
 .dashboard-navbar__sidebar-trigger {
-  @apply text-customgreys-dirtyGrey hover:text-white-50 transition-colors;
+  @apply text-customgreys-dirtyGrey hover:text-white-50 transition-colors p-1 rounded-md hover:bg-white-50/5;
 }
 
 /* My custom style */
