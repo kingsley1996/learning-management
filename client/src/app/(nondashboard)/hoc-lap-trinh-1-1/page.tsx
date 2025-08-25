@@ -1816,7 +1816,7 @@ export default function Page() {
             </div>
 
             <h3 className="text-3xl md:text-4xl font-bold text-white mb-2">
-              Đăng Ký Sớm - Tiết Kiệm 70%
+              Đăng Ký Sớm - Tiết Kiệm 80%
             </h3>
 
             <h4 className="text-xl text-green-500 mb-4">
