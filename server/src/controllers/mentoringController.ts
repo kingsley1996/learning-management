@@ -36,9 +36,8 @@ export const registerMentoring = async (
     const courseId = "mentoring-1-1"; // Mã cố định cho khóa học 1-1
     
     // Set fixed price for mentoring
-    const amount = 1499000; // 1,499,000 VND
-    // const amount = 2000; // test payment qr
-    
+    const amount = 990000; // 990.000 VND
+
     // Tạo orderCode: CWS11 + 6 số ngẫu nhiên
     const orderCode = `CWS11${Math.floor(100000 + Math.random() * 900000)}`;
     

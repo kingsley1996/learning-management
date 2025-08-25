@@ -686,8 +686,7 @@ export default function Page() {
     setShowQRModal(true);
   };
 
-  const coursePrice = 1499000; // Giá khóa học: 1.499.000 VND
-  // const coursePrice = 2000; // Giá khóa học: 1.999.999 VND
+  const coursePrice = 990000; // Giá khóa học: 999.000 VND
 
   return (
     <main className="min-h-screen w-full">
