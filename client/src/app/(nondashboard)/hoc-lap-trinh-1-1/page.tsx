@@ -2028,7 +2028,7 @@ export default function Page() {
                 * Ưu đãi sẽ kết thúc ngay khi hết slot hoặc hết thời gian
               </p>
               <p className="text-sm text-gray-300">
-                * Học phí sẽ tăng lên 2.999.999₫ cho đợt tuyển sinh kế tiếp
+                * Học phí sẽ tăng lên 4.990.000₫ cho đợt tuyển sinh kế tiếp
               </p>
             </div>
           </div>
