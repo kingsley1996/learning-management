@@ -1826,15 +1826,15 @@ export default function Page() {
             <div className="flex flex-col items-center justify-center mb-4 sm:mb-6">
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-xl sm:text-2xl text-gray-400 line-through">
-                  4.499.000₫
+                  4.990.000₫
                 </span>
                 <span className="text-3xl sm:text-4xl font-bold text-white">
-                  1.499.000₫
+                  990.000₫
                 </span>
               </div>
               <span className="inline-block px-3 py-1 bg-green-500/20 text-green-300 text-xs sm:text-sm rounded-full mb-3 sm:mb-4">
-                <span className="animate-pulse">Tiết kiệm 3.000.000₫</span> -
-                Giảm giá 70%
+                <span className="animate-pulse">Tiết kiệm 4.000.000₫</span> -
+                Giảm giá học phí đến 80%
               </span>
 
               <div className="flex items-center justify-center gap-3 mb-3">
