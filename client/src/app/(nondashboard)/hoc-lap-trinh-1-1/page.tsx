@@ -1880,7 +1880,7 @@ export default function Page() {
               <SlotProgressBar />
             </div>
 
-            <CountdownTimer targetDate={new Date("2025-09-30")} />
+            <CountdownTimer targetDate={new Date("2025-09-15")} />
 
             <ul className="mb-8 space-y-3">
               <li className="flex items-center justify-center text-gray-300">
