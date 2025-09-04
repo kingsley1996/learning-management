@@ -686,7 +686,7 @@ export default function Page() {
     setShowQRModal(true);
   };
 
-  const coursePrice = 990000; // Giá khóa học: 999.000 VND
+  const coursePrice = 2490000; // Giá khóa học: 2.490.000 VND
 
   return (
     <main className="min-h-screen w-full">
@@ -1829,12 +1829,12 @@ export default function Page() {
                   4.990.000₫
                 </span>
                 <span className="text-3xl sm:text-4xl font-bold text-white">
-                  990.000₫
+                  2.490.000₫
                 </span>
               </div>
               <span className="inline-block px-3 py-1 bg-green-500/20 text-green-300 text-xs sm:text-sm rounded-full mb-3 sm:mb-4">
-                <span className="animate-pulse">Tiết kiệm 4.000.000₫</span> -
-                Giảm giá học phí đến 80%
+                <span className="animate-pulse">Tiết kiệm 2.500.000₫</span> -
+                Giảm giá học phí đến 70%
               </span>
 
               <div className="flex items-center justify-center gap-3 mb-3">
