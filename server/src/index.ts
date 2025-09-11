@@ -19,6 +19,7 @@ import transactionRoutes from "./routes/transactionRoutes";
 import userCourseProgressRoutes from "./routes/userCourseProgressRoutes";
 import webhookRoutes from "./routes/webhookRoutes";
 import mentoringRoutes from "./routes/mentoringRoutes";
+import blogRoutes from "./routes/blogRoutes";
 
 /* CONFIGURATIONS */
 dotenv.config();
@@ -51,6 +52,7 @@ app.use("/users/clerk", requireAuth(), userClerkRoutes);
 app.use("/webhook", webhookRoutes);
 app.use("/transactions", requireAuth(), transactionRoutes);
 app.use("/mentoring", mentoringRoutes);
+app.use("/blog", blogRoutes);
 
 app.use("/users/course-progress", requireAuth(), userCourseProgressRoutes);
 

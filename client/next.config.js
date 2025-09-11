@@ -1,7 +1,8 @@
 /** @type {import('next').NextConfig}  */
 const nextConfig = {
   images: {
-    domains: ['d26sniwowg0n19.cloudfront.net', 'img.vietqr.io'],
+    domains: ['d26sniwowg0n19.cloudfront.net', 'img.vietqr.io', 'media2.dev.to',
+      'dev-to-uploads.s3.amazonaws.com'],
     remotePatterns: [
       {
         protocol: "https",

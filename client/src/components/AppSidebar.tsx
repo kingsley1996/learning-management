@@ -40,6 +40,7 @@ const AppSidebar = () => {
     ],
     teacher: [
       { icon: BookOpen, label: "Khoá học", href: "/teacher/courses" },
+      { icon: BookOpen, label: "Blog", href: "/teacher/blog" },
       { icon: DollarSign, label: "Thanh toán", href: "/teacher/billing" },
       { icon: User, label: "Hồ sơ", href: "/teacher/profile" },
       { icon: Settings, label: "Cài đặt", href: "/teacher/settings" },

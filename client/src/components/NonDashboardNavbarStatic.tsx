@@ -40,6 +40,13 @@ export const NonDashboardNavbarStatic = () => {
                 Khoá Học
               </Link>
               <Link
+                href="/blog"
+                className="px-5 text-[18px] font-Poppins font-[500] false"
+                scroll={false}
+              >
+                Blog
+              </Link>
+              <Link
                 href="/hoc-lap-trinh-1-1"
                 className="px-5 text-[18px] font-Poppins font-[500] false"
                 scroll={false}

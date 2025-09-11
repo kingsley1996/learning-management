@@ -50,6 +50,7 @@ const NonDashboardNavbar = () => {
     { href: "/", label: "Trang Chủ" },
     { href: "/", label: "Giới Thiệu" },
     { href: "/search", label: "Khoá Học" },
+    { href: "/blog", label: "Blog" },
     { href: "/hoc-lap-trinh-1-1", label: "Học Lập Trình 1-1" },
   ];
 

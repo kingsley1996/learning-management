@@ -74,7 +74,7 @@ const customBaseQuery = async (
 export const api = createApi({
   baseQuery: customBaseQuery,
   reducerPath: "api",
-  tagTypes: ["Courses", "Users", "UserCourseProgress"],
+  tagTypes: ["Courses", "Users", "UserCourseProgress", "Blog"],
   endpoints: (build) => ({
     /* 
     ===============
@@ -401,6 +401,60 @@ export const api = createApi({
         return url;
       },
     }),
+
+    /* 
+    ===============
+    BLOG
+    =============== 
+    */
+    getBlogPosts: build.query<
+      BlogPost[],
+      { page?: number; limit?: number; tag?: string; published?: boolean }
+    >({
+      query: ({ page = 1, limit = 10, tag, published } = {}) => {
+        const params = new URLSearchParams();
+        params.set("page", String(page));
+        params.set("limit", String(limit));
+        if (tag) params.set("tag", tag);
+        if (published !== undefined) params.set("published", String(published));
+        return `blog?${params.toString()}`;
+      },
+      providesTags: ["Blog"],
+    }),
+
+    getBlogPostById: build.query<BlogPost, string>({
+      query: (id) => `blog/${id}`,
+      providesTags: (result, error, id) => [{ type: "Blog", id }],
+    }),
+
+    getBlogPostBySlug: build.query<BlogPost, string>({
+      query: (slug) => `blog/slug/${slug}`,
+      providesTags: (result, error, slug) => [
+        { type: "Blog", id: slug } as any,
+      ],
+    }),
+
+    createBlogPost: build.mutation<BlogPost, Partial<BlogPost>>({
+      query: (body) => ({ url: `blog`, method: "POST", body }),
+      invalidatesTags: ["Blog"],
+    }),
+
+    updateBlogPost: build.mutation<
+      BlogPost,
+      { id: string; updates: Partial<BlogPost> }
+    >({
+      query: ({ id, updates }) => ({
+        url: `blog/${id}`,
+        method: "PUT",
+        body: updates,
+      }),
+      invalidatesTags: ["Blog"],
+    }),
+
+    deleteBlogPost: build.mutation<{ message: string }, string>({
+      query: (id) => ({ url: `blog/${id}`, method: "DELETE" }),
+      invalidatesTags: ["Blog"],
+    }),
   }),
 });
 
@@ -425,4 +479,10 @@ export const {
   useCheckMentoringStatusQuery,
   useGetMentoringDetailsQuery,
   useGetAllMentoringOrdersQuery,
+  useGetBlogPostsQuery,
+  useGetBlogPostByIdQuery,
+  useGetBlogPostBySlugQuery,
+  useCreateBlogPostMutation,
+  useUpdateBlogPostMutation,
+  useDeleteBlogPostMutation,
 } = api;

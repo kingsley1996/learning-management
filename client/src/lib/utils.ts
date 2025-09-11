@@ -423,3 +423,136 @@ export async function uploadImage(
     throw error;
   }
 }
+
+// Blog Image Upload Functions
+export const createBlogFormData = (
+  data: any,
+  image: string | null
+): FormData => {
+  const formData = new FormData();
+  formData.append("title", data.title);
+  formData.append("slug", data.slug);
+  formData.append("excerpt", data.excerpt || "");
+  formData.append("coverImageUrl", image || "");
+  formData.append("tags", JSON.stringify(data.tags));
+  formData.append("content", data.content);
+  formData.append("published", data.published.toString());
+  formData.append("authorId", data.authorId);
+  formData.append("authorName", data.authorName);
+
+  return formData;
+};
+
+export async function uploadBlogImage(
+  postId: string,
+  file: File,
+  getUploadImageUrl: any
+): Promise<string> {
+  try {
+    const { uploadUrl, imageUrl } = await getUploadImageUrl({
+      postId,
+      fileName: file.name,
+      fileType: file.type,
+    }).unwrap();
+
+    const uploadResponse = await fetch(uploadUrl, {
+      method: "PUT",
+      headers: {
+        "Content-Type": file.type,
+      },
+      body: file,
+    });
+
+    if (!uploadResponse.ok) {
+      throw new Error(`Upload failed: ${uploadResponse.statusText}`);
+    }
+
+    toast.success(`Ảnh đã được tải lên thành công`);
+    return imageUrl;
+  } catch (error) {
+    console.error(`Failed to upload image for blog post ${postId}:`, error);
+    toast.error("Upload ảnh thất bại");
+    throw error;
+  }
+}
+
+// Validate image file
+export const validateImageFile = (file: File): { isValid: boolean; error?: string } => {
+  const maxSize = 5 * 1024 * 1024; // 5MB
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+
+  if (!allowedTypes.includes(file.type)) {
+    return {
+      isValid: false,
+      error: 'Chỉ hỗ trợ file JPG, PNG, WebP, GIF'
+    };
+  }
+
+  if (file.size > maxSize) {
+    return {
+      isValid: false,
+      error: 'Kích thước file không được vượt quá 5MB'
+    };
+  }
+
+  return { isValid: true };
+};
+
+// Generate unique filename for blog images
+export const generateBlogImageFileName = (originalName: string, postId?: string): string => {
+  const timestamp = Date.now();
+  const extension = originalName.split('.').pop();
+  const cleanName = originalName.replace(/[^a-zA-Z0-9.-]/g, '_');
+  
+  return postId 
+    ? `blog-${postId}-${timestamp}.${extension}`
+    : `blog-${timestamp}-${cleanName}`;
+};
+
+// Blog categories
+export const blogCategories = [
+  { value: "technology", label: "Công Nghệ" },
+  { value: "programming", label: "Lập Trình" },
+  { value: "web-development", label: "Web Development" },
+  { value: "mobile-development", label: "Mobile Development" },
+  { value: "artificial-intelligence", label: "Trí Tuệ Nhân Tạo" },
+  { value: "data-science", label: "Khoa Học Dữ Liệu" },
+  { value: "tutorial", label: "Hướng Dẫn" },
+  { value: "tips-tricks", label: "Tips & Tricks" },
+  { value: "career", label: "Nghề Nghiệp" },
+  { value: "review", label: "Review" },
+] as const;
+
+// Safe date formatter
+export function formatDate(date: string | Date | undefined | null): string {
+  if (!date) return "Chưa xác định";
+  
+  try {
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    if (isNaN(dateObj.getTime())) return "Ngày không hợp lệ";
+    
+    return dateObj.toLocaleString('vi-VN', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    });
+  } catch (error) {
+    return "Ngày không hợp lệ";
+  }
+}
+
+export function formatDateShort(date: string | Date | undefined | null): string {
+  if (!date) return "Chưa xác định";
+  
+  try {
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    if (isNaN(dateObj.getTime())) return "N/A";
+    
+    return dateObj.toLocaleDateString('vi-VN');
+  } catch (error) {
+    return "N/A";
+  }
+}

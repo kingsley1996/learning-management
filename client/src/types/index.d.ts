@@ -217,6 +217,21 @@ declare global {
     coursePrice: string;
     courseStatus: boolean;
   }
+
+  interface BlogPost {
+    id: string;
+    slug: string;
+    title: string;
+    excerpt?: string;
+    content: string;
+    coverImageUrl?: string;
+    tags?: string[];
+    authorId?: string;
+    authorName?: string;
+    published: boolean;
+    createdAt?: string | Date;
+    updatedAt?: string | Date;
+  }
 }
 
 export {};
