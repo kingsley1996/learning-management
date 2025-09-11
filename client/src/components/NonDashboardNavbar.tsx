@@ -4,11 +4,14 @@ import { SignedIn, SignedOut, UserButton, useUser } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 const NonDashboardNavbar = () => {
   const { user } = useUser();
+  const pathname = usePathname();
   const userRole = user?.publicMetadata?.userType as "student" | "teacher";
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const isMobile = useIsMobile();
@@ -46,13 +49,32 @@ const NonDashboardNavbar = () => {
     };
   }, [isMenuOpen]);
 
+  // Close mobile menu when pathname changes
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [pathname]);
+
   const navigationLinks = [
-    { href: "/", label: "Trang Chủ" },
-    { href: "/", label: "Giới Thiệu" },
-    { href: "/search", label: "Khoá Học" },
-    { href: "/blog", label: "Blog" },
-    { href: "/hoc-lap-trinh-1-1", label: "Học Lập Trình 1-1" },
+    { href: "/", label: "Trang Chủ", exactMatch: true },
+    // { href: "/", label: "Giới Thiệu", exactMatch: true },
+    { href: "/search", label: "Khoá Học", exactMatch: false },
+    { href: "/blog", label: "Blog", exactMatch: false },
+    { href: "/hoc-lap-trinh-1-1", label: "Học Lập Trình 1-1", exactMatch: true },
   ];
+
+  // Function to check if link is active
+  const isLinkActive = (href: string, exactMatch: boolean = false): boolean => {
+    if (exactMatch) {
+      return pathname === href;
+    }
+    
+    // For non-exact matches, check if pathname starts with href
+    if (href === "/") {
+      return pathname === "/";
+    }
+    
+    return pathname.startsWith(href);
+  };
 
   const handleLinkClick = () => {
     setIsMenuOpen(false);
@@ -76,16 +98,27 @@ const NonDashboardNavbar = () => {
           {/* Desktop Navigation */}
           <div className="nondashboard-navbar__desktop-nav">
             <nav className="nondashboard-navbar__nav">
-              {navigationLinks.map((link) => (
-                <Link
-                  key={link.href + link.label}
-                  href={link.href}
-                  className="nondashboard-navbar__nav-link"
-                  scroll={false}
-                >
-                  {link.label}
-                </Link>
-              ))}
+              {navigationLinks.map((link) => {
+                const isActive = isLinkActive(link.href, link.exactMatch);
+                return (
+                  <Link
+                    key={link.href + link.label}
+                    href={link.href}
+                    className={cn(
+                      // Base styles
+                      "nondashboard-navbar__nav-link relative transition-colors duration-200",
+                      // Active styles - chỉ gạch ngang màu tím
+                      isActive
+                        ? "after:absolute after:bottom-[-4px] after:left-0 after:right-0 after:h-0.5 after:bg-purple-600"
+                        : "hover:text-gray-600"
+                    )}
+                    scroll={false}
+                    aria-current={isActive ? "page" : undefined}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
             </nav>
           </div>
 
@@ -153,17 +186,28 @@ const NonDashboardNavbar = () => {
           <div className="nondashboard-navbar__mobile-menu-content">
             {/* Mobile Navigation Links */}
             <nav className="nondashboard-navbar__mobile-nav">
-              {navigationLinks.map((link) => (
-                <Link
-                  key={link.href + link.label}
-                  href={link.href}
-                  className="nondashboard-navbar__mobile-nav-link"
-                  scroll={false}
-                  onClick={handleLinkClick}
-                >
-                  {link.label}
-                </Link>
-              ))}
+              {navigationLinks.map((link) => {
+                const isActive = isLinkActive(link.href, link.exactMatch);
+                return (
+                  <Link
+                    key={link.href + link.label}
+                    href={link.href}
+                    className={cn(
+                      // Base mobile styles
+                      "nondashboard-navbar__mobile-nav-link relative transition-colors duration-200",
+                      // Active mobile styles - chỉ gạch ngang màu tím bên trái
+                      isActive
+                        ? "border-l-2 border-purple-600 pl-4"
+                        : "hover:text-gray-600"
+                    )}
+                    scroll={false}
+                    onClick={handleLinkClick}
+                    aria-current={isActive ? "page" : undefined}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
             </nav>
 
             {/* Mobile Auth Buttons */}
