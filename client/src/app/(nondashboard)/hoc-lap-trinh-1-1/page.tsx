@@ -723,10 +723,13 @@ export default function Page() {
           <div className="not-prose my-5 mx-auto mt-10 max-w-screen-xl sm:relative sm:my-10">
             <ul className="flex w-full flex-wrap items-center justify-center gap-3 sm:gap-4">
               <li className="flex h-10 items-center justify-center rounded border border-blue-500/30 bg-gradient-to-b from-blue-500/10 to-blue-500/20 px-5 text-center text-sm font-medium text-blue-200 hover:border-blue-400/40 hover:from-blue-500/20 hover:to-blue-500/30 transition-all duration-200 sm:h-12 sm:px-7 sm:text-lg">
-                Next.js App Router
+                Nodejs
               </li>
               <li className="flex h-10 items-center justify-center rounded border border-purple-500/30 bg-gradient-to-b from-purple-500/10 to-purple-500/20 px-5 text-center text-sm font-medium text-purple-200 hover:border-purple-400/40 hover:from-purple-500/20 hover:to-purple-500/30 transition-all duration-200 sm:h-12 sm:px-7 sm:text-lg">
                 React 19
+              </li>
+              <li className="flex h-10 items-center justify-center rounded border border-cyan-500/30 bg-gradient-to-b from-cyan-500/10 to-cyan-500/20 px-5 text-center text-sm font-medium text-cyan-200 hover:border-cyan-400/40 hover:from-cyan-500/20 hover:to-cyan-500/30 transition-all duration-200 sm:h-12 sm:px-7 sm:text-lg">
+                Vue3
               </li>
               <li className="flex h-10 items-center justify-center rounded border border-indigo-500/30 bg-gradient-to-b from-indigo-500/10 to-indigo-500/20 px-5 text-center text-sm font-medium text-indigo-200 hover:border-indigo-400/40 hover:from-indigo-500/20 hover:to-indigo-500/30 transition-all duration-200 sm:h-12 sm:px-7 sm:text-lg">
                 TypeScript
@@ -1112,12 +1115,7 @@ export default function Page() {
                   />
                 </div>
                 <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center p-3 hover:scale-110 transition-transform">
-                  <Image
-                    src="/amazon_aws.svg"
-                    alt="AWS"
-                    width={48}
-                    height={48}
-                  />
+                  <Image src="/vuejs.png" alt="Vuejs" width={48} height={48} />
                 </div>
               </div>
               {/* Duplicate set for seamless loop */}
@@ -1150,12 +1148,7 @@ export default function Page() {
                   />
                 </div>
                 <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center p-3 hover:scale-110 transition-transform">
-                  <Image
-                    src="/amazon_aws.svg"
-                    alt="AWS"
-                    width={48}
-                    height={48}
-                  />
+                  <Image src="/vuejs.png" alt="Vuejs" width={48} height={48} />
                 </div>
               </div>
             </div>
