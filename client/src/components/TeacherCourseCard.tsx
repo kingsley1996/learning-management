@@ -64,30 +64,26 @@ const TeacherCourseCard = ({
         </div>
 
         <div className="w-full xl:flex space-y-2 xl:space-y-0 gap-2 mt-3">
-          {isOwner ? (
-            <>
-              <div>
-                <Button
-                  className="course-card-teacher__edit-button"
-                  onClick={() => onEdit(course)}
-                >
-                  <Pencil className="w-4 h-4 mr-2" />
-                  Edit
-                </Button>
-              </div>
-              <div>
-                <Button
-                  className="course-card-teacher__delete-button"
-                  onClick={() => onDelete(course)}
-                >
-                  <Trash2 className="w-4 h-4 mr-2" />
-                  Delete
-                </Button>
-              </div>
-            </>
-          ) : (
-            <p className="text-sm text-gray-500 italic">View Only</p>
-          )}
+          <>
+            <div>
+              <Button
+                className="course-card-teacher__edit-button"
+                onClick={() => onEdit(course)}
+              >
+                <Pencil className="w-4 h-4 mr-2" />
+                Edit
+              </Button>
+            </div>
+            <div>
+              <Button
+                className="course-card-teacher__delete-button"
+                onClick={() => onDelete(course)}
+              >
+                <Trash2 className="w-4 h-4 mr-2" />
+                Delete
+              </Button>
+            </div>
+          </>
         </div>
       </CardContent>
     </Card>
