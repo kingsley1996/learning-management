@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import {
   useCreateCourseMutation,
   useDeleteCourseMutation,
-  useGetCoursesQuery,
+  useGetAllCoursesQuery,
 } from "@/state/api";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
@@ -21,7 +21,7 @@ const Courses = () => {
     data: courses,
     isLoading,
     isError,
-  } = useGetCoursesQuery({ category: "all" });
+  } = useGetAllCoursesQuery({ category: "all" });
 
   const [createCourse] = useCreateCourseMutation();
   const [deleteCourse] = useDeleteCourseMutation();

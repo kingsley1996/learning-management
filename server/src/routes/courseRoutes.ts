@@ -5,6 +5,7 @@ import {
   deleteCourse,
   getCourse,
   listCourses,
+  listAllCourses,
   updateCourse,
   getUploadVideoUrl,
   getUploadImageUrl,
@@ -16,6 +17,7 @@ const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
 
 router.get("/", listCourses);
+router.get("/allCourses", listAllCourses);
 router.post("/", requireAuth(), createCourse);
 
 router.get("/:courseId", getCourse);
