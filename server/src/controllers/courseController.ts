@@ -88,12 +88,12 @@ export const updateCourse = async (
       return;
     }
 
-    if (course.teacherId !== userId) {
-      res
-        .status(403)
-        .json({ message: "Not authorized to update this course " });
-      return;
-    }
+    // if (course.teacherId !== userId) {
+    //   res
+    //     .status(403)
+    //     .json({ message: "Not authorized to update this course " });
+    //   return;
+    // }
 
     if (updateData.isFreeCourse) {
       updateData.isFreeCourse =
@@ -152,12 +152,12 @@ export const deleteCourse = async (
       return;
     }
 
-    if (course.teacherId !== userId) {
-      res
-        .status(403)
-        .json({ message: "Not authorized to delete this course " });
-      return;
-    }
+    // if (course.teacherId !== userId) {
+    //   res
+    //     .status(403)
+    //     .json({ message: "Not authorized to delete this course " });
+    //   return;
+    // }
 
     await Course.delete(courseId);
 
