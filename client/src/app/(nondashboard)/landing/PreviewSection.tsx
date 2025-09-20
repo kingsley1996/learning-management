@@ -26,7 +26,7 @@ const PreviewSection = () => {
           <span className="tp-circle-1"></span>
           <span className="tp-circle-2"></span>
           <div className="w-full flex flex-col md:flex-row items-center justify-center">
-            <div className="md:w-[60px] md:h-[60px] w-[55px] h-[55px] cursor-pointer bg-transparent flex items-center justify-center border border-[#000] border-white rounded-full">
+            <Link href="/roadmap" className="md:w-[60px] md:h-[60px] w-[55px] h-[55px] cursor-pointer bg-transparent flex items-center justify-center border border-[#f7f4f4] border-white rounded-full">
               <svg
                 stroke="currentColor"
                 fill="currentColor"
@@ -40,12 +40,12 @@ const PreviewSection = () => {
                   <path d="M6.562,21.94a2.5,2.5,0,0,1-2.5-2.5V4.56A2.5,2.5,0,0,1,7.978,2.5L18.855,9.939a2.5,2.5,0,0,1,0,4.12L7.977,21.5A2.5,2.5,0,0,1,6.562,21.94Zm0-18.884a1.494,1.494,0,0,0-.7.177,1.477,1.477,0,0,0-.8,1.327V19.439a1.5,1.5,0,0,0,2.35,1.235l10.877-7.44a1.5,1.5,0,0,0,0-2.471L7.413,3.326A1.491,1.491,0,0,0,6.564,3.056Z"></path>
                 </g>
               </svg>
-            </div>
+            </Link>
             <Link
-              href="/hoc-lap-trinh-1-1"
+              href="/roadmap"
               className="text-[24px] font-bold text-purple-600 font-Poppins pt-2 md:pl-3 cursor-pointer md:!text-[18px]"
             >
-              Lộ trình học lập trình 1-1
+              Roadmap học lập trình cho bạn
             </Link>
           </div>
         </div>

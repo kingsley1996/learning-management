@@ -2091,3 +2091,20 @@ html {
 .section-fade-in-delay-3 {
   animation-delay: 0.6s;
 }
+
+
+@layer components {
+  .roadmap-node {
+    @apply relative overflow-hidden;
+  }
+  
+  .roadmap-node::before {
+    content: '';
+    @apply absolute -top-10 -right-10 w-40 h-40 bg-blue-500/5 rounded-full blur-3xl;
+  }
+  
+  .roadmap-node::after {
+    content: '';
+    @apply absolute -bottom-10 -left-10 w-40 h-40 bg-purple-500/5 rounded-full blur-3xl;
+  }
+}

@@ -43,6 +43,7 @@ const NonDashboardNavbar = () => {
 
   const navigationLinks = [
     { href: "/", label: "Trang Chủ", exactMatch: true },
+    { href: "/roadmap", label: "Roadmap", exactMatch: true },
     { href: "/search", label: "Khoá Học", exactMatch: false },
     { href: "/blog", label: "Blog", exactMatch: false },
     { href: "/hoc-lap-trinh-1-1", label: "Học Lập Trình 1-1", exactMatch: true },
